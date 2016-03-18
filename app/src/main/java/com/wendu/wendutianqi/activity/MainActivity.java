@@ -14,6 +14,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,13 +22,17 @@ import android.view.View;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
+import com.google.gson.Gson;
 import com.wendu.wendutianqi.R;
 import com.wendu.wendutianqi.fragment.MyMenuFragment;
+import com.wendu.wendutianqi.model.WeatherFirst;
 import com.wendu.wendutianqi.net.Location;
 import com.wendu.wendutianqi.net.MyOkhttp;
 import com.wendu.wendutianqi.net.Urls;
 import com.wendu.wendutianqi.utils.LogUtil;
 import com.wendu.wendutianqi.utils.SystemBarUtil;
+import com.wendu.wendutianqi.utils.ToastUtil;
+import com.wendu.wendutianqi.view.ErrorView;
 import com.wendu.wendutianqi.view.SystemBarTintManager;
 import com.wendu.wendutianqi.view.flowingdrawer.FlowingView;
 import com.wendu.wendutianqi.view.flowingdrawer.LeftDrawerLayout;
@@ -47,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
     public LocationClient mLocationClient = null;
     public BDLocationListener myListener = new MyLocationListener();
     private String place;
+    private boolean place2;
+    private ErrorView errorView;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
         mLeftDrawerLayout.setMenuFragment(mMenuFragment);
 
         toolbar = (Toolbar) findViewById(R.id.location_fragment_toolbar);
-        toolbar.setTitle("北京");
+
         toolbar.setLogo(R.mipmap.location_white);
         toolbar.setNavigationIcon(R.mipmap.menu_white);
         setSupportActionBar(toolbar);
@@ -106,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.hyacinth);
         setHead(bitmap);
 
-
+        errorView=(ErrorView) findViewById(R.id.location_fragment_ev);
     }
 
     public void setListener(){
@@ -138,11 +145,36 @@ public class MainActivity extends AppCompatActivity {
         }
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            LogUtil.e(result);
+
+            Gson gson=new Gson();
+            if(!TextUtils.isEmpty(result)){
+                LogUtil.e(result);
+                WeatherFirst weatherFirst=gson.fromJson(result,WeatherFirst.class);
+                if(weatherFirst!=null&&!TextUtils.isEmpty(weatherFirst.status)){
+                    if(TextUtils.equals("ok",weatherFirst.status)){
+
+
+
+
+                    }else if(TextUtils.equals("unknown city",weatherFirst.status)){
+                        if(place2){
+                            ToastUtil.showShort(MainActivity.this,"额，很抱歉，没有该地区信息");
+                        }else{
+                            place2=true;
+                            mLocationClient.start();
+                        }
+                    }else{
+                        errorView.LodError();
+                    }
+                }
+            }else {
+                errorView.ShowError();
+            }
+
             mSwipeLayout.setRefreshing(true);
+
         }
     }
-
 
     /**
      * 获取图片主颜色 设置状态栏和工具栏
@@ -152,18 +184,12 @@ public class MainActivity extends AppCompatActivity {
         Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
             @Override
             public void onGenerated(Palette palette) {
-//                int defaultColor = getResources().getColor(R.color.SecondaryText);
-//                int defaultTitleColor = getResources().getColor(R.color.white);
-//                titleColor = palette.getLightVibrantColor(defaultTitleColor);
-//                bgColor = palette.getDarkVibrantColor(defaultColor);
                 Palette.Swatch swatch = palette.getVibrantSwatch();
                 if (swatch != null) {
                     collapsingToolbar.setContentScrimColor(swatch.getRgb());
-
                     collapsingToolbar.setExpandedTitleColor(swatch.getBodyTextColor());
                     SystemBarUtil.setStatusBarColor(MainActivity.this,tintManager,swatch.getRgb());
                 }
-
             }
         });
     }
@@ -173,12 +199,21 @@ public class MainActivity extends AppCompatActivity {
         public void onReceiveLocation(BDLocation bdLocation) {
             if(Location.result(MainActivity.this,bdLocation)){
                 LogUtil.e("\n" + bdLocation.getCity()+":" + bdLocation.getCityCode()+"\n" + bdLocation.getDistrict());
-                place=bdLocation.getDistrict();
-                if(place.endsWith("区")){
-                    place= bdLocation.getDistrict().substring(0,bdLocation.getDistrict().length()-1);
-                     LogUtil.e(place);
+
+                if(place2){
+                    place=bdLocation.getCity();
+                    if(place.endsWith("市")){
+                        place= bdLocation.getDistrict().substring(0,bdLocation.getDistrict().length()-1);
+                    }
+                }else{
+                    place=bdLocation.getDistrict();
+                    if(place.endsWith("区")){
+                        place= bdLocation.getDistrict().substring(0,bdLocation.getDistrict().length()-1);
+                    }
                 }
 
+                LogUtil.e(place);
+                toolbar.setTitle(place);
                 new GetWeatherData().execute(Urls.WEATHER_URL);
                 mLocationClient.stop();
             }

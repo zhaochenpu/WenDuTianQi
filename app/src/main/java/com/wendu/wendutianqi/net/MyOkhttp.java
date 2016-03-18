@@ -72,7 +72,7 @@ public class MyOkhttp {
 
     private static void addParams(FormBody.Builder builder, Map<String, String> params)
     {
-        builder.add("key",R.string.weatherkey);
+        builder.add("key",Urls.WEATHER_KEY);
         for (String key : params.keySet())
         {
             if(!TextUtils.isEmpty(params.get(key))){
