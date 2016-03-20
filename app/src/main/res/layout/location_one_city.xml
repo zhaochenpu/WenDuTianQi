@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:scaleType="centerCrop"
                 android:adjustViewBounds="true"
-                android:src="@mipmap/hyacinth"
+                android:src="@mipmap/time2016"
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.7"
                 />
@@ -62,6 +62,7 @@
          app:layout_behavior="@string/appbar_scrolling_view_behavior"
          >
         <ScrollView
+            android:id="@+id/location_sv"
             android:layout_width="match_parent"
             android:layout_height="1000dp">
             <RelativeLayout

@@ -8,16 +8,21 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ScrollingView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.ScrollView;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -30,6 +35,7 @@ import com.wendu.wendutianqi.net.Location;
 import com.wendu.wendutianqi.net.MyOkhttp;
 import com.wendu.wendutianqi.net.Urls;
 import com.wendu.wendutianqi.utils.LogUtil;
+import com.wendu.wendutianqi.utils.SnackbarUtil;
 import com.wendu.wendutianqi.utils.SystemBarUtil;
 import com.wendu.wendutianqi.utils.ToastUtil;
 import com.wendu.wendutianqi.view.ErrorView;
@@ -54,6 +60,9 @@ public class MainActivity extends AppCompatActivity {
     private String place;
     private boolean place2;
     private ErrorView errorView;
+    private CoordinatorLayout coordinatorLayout;
+    private ImageView headImageView;
+    private ScrollView scrollView;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,11 +94,16 @@ public class MainActivity extends AppCompatActivity {
 
     public void initView(){
 
+        coordinatorLayout=(CoordinatorLayout) findViewById(R.id.location_fragment_cl);
+
         tintManager = new SystemBarTintManager(this);
 
         mSwipeLayout = (SwipeRefreshLayout)findViewById(R.id.location_swipe);
         mSwipeLayout.setColorSchemeResources(R.color.colorPrimary,R.color.blue,R.color.light_colorPrimary);
+        mSwipeLayout.setProgressViewOffset(false, 0,  (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
         mSwipeLayout.setRefreshing(true);
+
+        scrollView=(ScrollView) findViewById(R.id.location_sv);
 
         mLeftDrawerLayout = (LeftDrawerLayout) findViewById(R.id.id_drawerlayout);
         FragmentManager fm = getSupportFragmentManager();
@@ -109,9 +123,11 @@ public class MainActivity extends AppCompatActivity {
 //        ab = getSupportActionBar();
 
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.location_fragment_ctl);
-//        collapsingToolbar.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.hyacinth);
-        setHead(bitmap);
+        collapsingToolbar.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
+
+        headImageView=(ImageView) findViewById(R.id.location_fragment_iv);
+
+        setHead();
 
         errorView=(ErrorView) findViewById(R.id.location_fragment_ev);
     }
@@ -158,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
 
                     }else if(TextUtils.equals("unknown city",weatherFirst.status)){
                         if(place2){
-                            ToastUtil.showShort(MainActivity.this,"额，很抱歉，没有该地区信息");
+                            SnackbarUtil.showLong(coordinatorLayout,"额，很抱歉，没有该地区信息");
                         }else{
                             place2=true;
                             mLocationClient.start();
@@ -171,33 +187,49 @@ public class MainActivity extends AppCompatActivity {
                 errorView.ShowError();
             }
 
-            mSwipeLayout.setRefreshing(true);
+            mSwipeLayout.setRefreshing(false);
 
         }
     }
 
     /**
      * 获取图片主颜色 设置状态栏和工具栏
-     * @param bitmap
      */
-    public void setHead (Bitmap bitmap) {
+    public void setHead () {
+
+
+//        headImageView.setDrawingCacheEnabled(true);
+//        Bitmap bitmap =headImageView.getDrawingCache();
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.time2016);
         Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
             @Override
             public void onGenerated(Palette palette) {
-                Palette.Swatch swatch = palette.getVibrantSwatch();
-                if (swatch != null) {
-                    collapsingToolbar.setContentScrimColor(swatch.getRgb());
-                    collapsingToolbar.setExpandedTitleColor(swatch.getBodyTextColor());
-                    SystemBarUtil.setStatusBarColor(MainActivity.this,tintManager,swatch.getRgb());
-                }
+
+                bgColor=palette.getDarkVibrantColor(getResources().getColor(R.color.white));
+                titleColor=palette.getLightVibrantColor(getResources().getColor(R.color.blue_light));
+                collapsingToolbar.setContentScrimColor(bgColor);
+                collapsingToolbar.setExpandedTitleColor(titleColor);
+                SystemBarUtil.setStatusBarColor(MainActivity.this,bgColor);
+//                Palette.Swatch swatch = palette.getVibrantSwatch();
+//                Palette.Swatch swatch2 = palette.getLightVibrantSwatch();
+//                if (swatch != null) {
+//                    collapsingToolbar.setContentScrimColor(swatch.getRgb());
+//                    collapsingToolbar.setExpandedTitleColor(swatch.getBodyTextColor());
+//                    SystemBarUtil.setStatusBarColor(MainActivity.this,tintManager,swatch.getRgb());
+//                }
+//                if (swatch2 != null) {
+//                    collapsingToolbar.setExpandedTitleColor(swatch2.getBodyTextColor());
+////                    scrollView.setBackgroundColor(swatch2.getBodyTextColor());
+//                }
             }
         });
+        headImageView.setDrawingCacheEnabled(false);
     }
 
     class MyLocationListener implements BDLocationListener {
         @Override
         public void onReceiveLocation(BDLocation bdLocation) {
-            if(Location.result(MainActivity.this,bdLocation)){
+            if(Location.result(MainActivity.this,bdLocation,coordinatorLayout)){
                 LogUtil.e("\n" + bdLocation.getCity()+":" + bdLocation.getCityCode()+"\n" + bdLocation.getDistrict());
 
                 if(place2){
@@ -213,12 +245,20 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 LogUtil.e(place);
-                toolbar.setTitle(place);
+                collapsingToolbar .setTitle(place);
                 new GetWeatherData().execute(Urls.WEATHER_URL);
                 mLocationClient.stop();
             }
         }
     }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+
+    }
+
 
 
     public void onBackPressed() {
@@ -228,5 +268,9 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
+
+
+
+
 
 }
