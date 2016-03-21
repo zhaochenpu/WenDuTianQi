@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.location_one_city);
+//        setContentView(R.layout.location_one_city);
 
         initView();
 
@@ -94,42 +94,42 @@ public class MainActivity extends AppCompatActivity {
 
     public void initView(){
 
-        coordinatorLayout=(CoordinatorLayout) findViewById(R.id.location_fragment_cl);
-
-        tintManager = new SystemBarTintManager(this);
-
-        mSwipeLayout = (SwipeRefreshLayout)findViewById(R.id.location_swipe);
-        mSwipeLayout.setColorSchemeResources(R.color.colorPrimary,R.color.blue,R.color.light_colorPrimary);
-        mSwipeLayout.setProgressViewOffset(false, 0,  (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
-        mSwipeLayout.setRefreshing(true);
-
-        scrollView=(ScrollView) findViewById(R.id.location_sv);
-
-        mLeftDrawerLayout = (LeftDrawerLayout) findViewById(R.id.id_drawerlayout);
-        FragmentManager fm = getSupportFragmentManager();
-        MyMenuFragment mMenuFragment = (MyMenuFragment) fm.findFragmentById(R.id.id_container_menu);
-        FlowingView mFlowingView = (FlowingView) findViewById(R.id.sv);
-        if (mMenuFragment == null) {
-            fm.beginTransaction().add(R.id.id_container_menu, mMenuFragment = new MyMenuFragment()).commit();
-        }
-        mLeftDrawerLayout.setFluidView(mFlowingView);
-        mLeftDrawerLayout.setMenuFragment(mMenuFragment);
-
-        toolbar = (Toolbar) findViewById(R.id.location_fragment_toolbar);
-
-        toolbar.setLogo(R.mipmap.location_white);
-        toolbar.setNavigationIcon(R.mipmap.menu_white);
-        setSupportActionBar(toolbar);
-//        ab = getSupportActionBar();
-
-        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.location_fragment_ctl);
-        collapsingToolbar.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
-
-        headImageView=(ImageView) findViewById(R.id.location_fragment_iv);
-
-        setHead();
-
-        errorView=(ErrorView) findViewById(R.id.location_fragment_ev);
+//        coordinatorLayout=(CoordinatorLayout) findViewById(R.id.location_fragment_cl);
+//
+//        tintManager = new SystemBarTintManager(this);
+//
+//        mSwipeLayout = (SwipeRefreshLayout)findViewById(R.id.location_swipe);
+//        mSwipeLayout.setColorSchemeResources(R.color.colorPrimary,R.color.blue,R.color.light_colorPrimary);
+//        mSwipeLayout.setProgressViewOffset(false, 0,  (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
+//        mSwipeLayout.setRefreshing(true);
+//
+//        scrollView=(ScrollView) findViewById(R.id.location_sv);
+//
+//        mLeftDrawerLayout = (LeftDrawerLayout) findViewById(R.id.id_drawerlayout);
+//        FragmentManager fm = getSupportFragmentManager();
+//        MyMenuFragment mMenuFragment = (MyMenuFragment) fm.findFragmentById(R.id.id_container_menu);
+//        FlowingView mFlowingView = (FlowingView) findViewById(R.id.sv);
+//        if (mMenuFragment == null) {
+//            fm.beginTransaction().add(R.id.id_container_menu, mMenuFragment = new MyMenuFragment()).commit();
+//        }
+//        mLeftDrawerLayout.setFluidView(mFlowingView);
+//        mLeftDrawerLayout.setMenuFragment(mMenuFragment);
+//
+//        toolbar = (Toolbar) findViewById(R.id.location_fragment_toolbar);
+//
+//        toolbar.setLogo(R.mipmap.location_white);
+//        toolbar.setNavigationIcon(R.mipmap.menu_white);
+//        setSupportActionBar(toolbar);
+////        ab = getSupportActionBar();
+//
+//        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.location_fragment_ctl);
+//        collapsingToolbar.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
+//
+//        headImageView=(ImageView) findViewById(R.id.location_fragment_iv);
+//
+//        setHead();
+//
+//        errorView=(ErrorView) findViewById(R.id.location_fragment_ev);
     }
 
     public void setListener(){
@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
 
                     }else if(TextUtils.equals("unknown city",weatherFirst.status)){
                         if(place2){
-                            SnackbarUtil.showLong(coordinatorLayout,"额，很抱歉，没有该地区信息");
+//                            SnackbarUtil.showLong(coordinatorLayout,"额，很抱歉，没有该地区信息");
                         }else{
                             place2=true;
                             mLocationClient.start();
@@ -198,15 +198,15 @@ public class MainActivity extends AppCompatActivity {
     public void setHead () {
 
 
-//        headImageView.setDrawingCacheEnabled(true);
-//        Bitmap bitmap =headImageView.getDrawingCache();
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.time2016);
+        headImageView.setDrawingCacheEnabled(true);
+        Bitmap bitmap =headImageView.getDrawingCache();
+//        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.time2016);
         Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
             @Override
             public void onGenerated(Palette palette) {
 
                 bgColor=palette.getDarkVibrantColor(getResources().getColor(R.color.white));
-                titleColor=palette.getLightVibrantColor(getResources().getColor(R.color.blue_light));
+                titleColor=palette.getLightVibrantColor(getResources().getColor(R.color.white));
                 collapsingToolbar.setContentScrimColor(bgColor);
                 collapsingToolbar.setExpandedTitleColor(titleColor);
                 SystemBarUtil.setStatusBarColor(MainActivity.this,bgColor);

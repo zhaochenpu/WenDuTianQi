@@ -5,6 +5,7 @@ package com.wendu.wendutianqi.model;
  */
 public class WeatherFirst {
 
+
     public String getStatus() {
         return status;
     }
@@ -13,7 +14,7 @@ public class WeatherFirst {
         this.status = status;
     }
 
-    public String status ;
+    public String status;
     public String basic;//城市基本信息
 
     public String getBasic() {
@@ -64,9 +65,10 @@ public class WeatherFirst {
         this.hourly_forecast = hourly_forecast;
     }
 
-    public String aqi ;
-    public String suggestion ;//生活指数
+    public String aqi;
+    public String suggestion;//生活指数
     public String now;//实况天气
-    public String daily_forecast ;//天气预报
-    public String hourly_forecast ;//每小时天气预报
+    public String daily_forecast;//天气预报
+    public String hourly_forecast;//每小时天气预报
+
 }
