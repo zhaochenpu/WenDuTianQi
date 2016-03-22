@@ -30,6 +30,7 @@ import com.wendu.wendutianqi.R;
 import com.wendu.wendutianqi.fragment.MyMenuFragment;
 import com.wendu.wendutianqi.model.AQI;
 import com.wendu.wendutianqi.model.DailyForecast;
+import com.wendu.wendutianqi.model.HoursWeather;
 import com.wendu.wendutianqi.model.WeatherFirst;
 import com.wendu.wendutianqi.model.WeatherNow;
 import com.wendu.wendutianqi.net.Location;
@@ -40,6 +41,7 @@ import com.wendu.wendutianqi.utils.LogUtil;
 import com.wendu.wendutianqi.utils.SnackbarUtil;
 import com.wendu.wendutianqi.utils.SystemBarUtil;
 import com.wendu.wendutianqi.view.ErrorView;
+import com.wendu.wendutianqi.view.NowCard;
 import com.wendu.wendutianqi.view.SystemBarTintManager;
 import com.wendu.wendutianqi.view.flowingdrawer.FlowingView;
 import com.wendu.wendutianqi.view.flowingdrawer.LeftDrawerLayout;
@@ -70,6 +72,7 @@ public class OneCityActivity extends AppCompatActivity {
     private CoordinatorLayout coordinatorLayout;
     private ImageView headImageView;
     private ScrollView scrollView;
+    private NowCard nowCard;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,6 +139,8 @@ public class OneCityActivity extends AppCompatActivity {
 
         setHead();
 
+        nowCard=(NowCard) findViewById(R.id.one_city_nowcard);
+
         errorView=(ErrorView) findViewById(R.id.one_city_error);
     }
 
@@ -198,14 +203,17 @@ public class OneCityActivity extends AppCompatActivity {
 
                         String aqi =MyJson.getString(jsonObject,"aqi");
                         aqi =MyJson.getString(aqi,"city");
+                        AQI aqi1 = null;
                         if(!TextUtils.isEmpty(aqi)){
-                            AQI aqi1= gson.fromJson(aqi, AQI.class);
+                            aqi1= gson.fromJson(aqi, AQI.class);
                         }else{
 
                         }
 
                         String now =MyJson.getString(jsonObject,"now");
                         WeatherNow weatherNow= gson.fromJson(now, WeatherNow.class);
+                        nowCard.setData(weatherNow,aqi1);
+
 
                         String daily_forecast =MyJson.getString(jsonObject,"daily_forecast");
                         LogUtil.e(daily_forecast);
@@ -248,9 +256,8 @@ public class OneCityActivity extends AppCompatActivity {
             if(!TextUtils.isEmpty(result)){
                 LogUtil.e(result);
 
-                JSONObject jsonObject = null;
+                JSONObject jsonObject;
                 String jsonData=null;
-                String status=null;
 
                 try {
                     jsonObject = new JSONObject(result);
@@ -260,7 +267,7 @@ public class OneCityActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 LogUtil.e("jsonData:..."+jsonData);
-//                WeatherFirst weatherFirst=gson.fromJson(jsonData,WeatherFirst.class);
+                List<HoursWeather> hoursWeathers= gson.fromJson(jsonData, new TypeToken<List<HoursWeather>>() {}.getType());
 
 
             }else {
