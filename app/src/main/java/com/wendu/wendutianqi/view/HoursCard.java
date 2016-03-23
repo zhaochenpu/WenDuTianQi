@@ -114,7 +114,7 @@ public class HoursCard extends CardView{
         String jf2=jf.trim();
 
         if(jf.length()==12){
-            jf=jf2.substring(jf2.length()-4,jf2.length()-2)+":"+jf2.substring(jf2.length()-1,jf2.length()+1);
+            jf=jf2.substring(jf2.length()-4,jf2.length()-2)+":"+jf2.substring(jf2.length()-0,jf2.length());
         }
         if(!today||!tomorrow){
             day=jf2.substring(jf2.length()-6,jf2.length()-4);
