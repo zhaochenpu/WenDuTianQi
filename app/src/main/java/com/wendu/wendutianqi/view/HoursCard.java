@@ -77,6 +77,7 @@ public class HoursCard extends CardView{
             }else if(today&&!tomorrow){
                 holder.hour_item_when.setText("明天");
                 holder.hour_item_when.setVisibility(VISIBLE);
+                tomorrow=true;
             }else{
                 holder.hour_item_when.setVisibility(GONE);
             }
@@ -114,7 +115,7 @@ public class HoursCard extends CardView{
         String jf2=jf.trim();
 
         if(jf.length()==12){
-            jf=jf2.substring(jf2.length()-4,jf2.length()-2)+":"+jf2.substring(jf2.length()-0,jf2.length());
+            jf=jf2.substring(jf2.length()-4,jf2.length()-2)+":"+"00";
         }
         if(!today||!tomorrow){
             day=jf2.substring(jf2.length()-6,jf2.length()-4);
