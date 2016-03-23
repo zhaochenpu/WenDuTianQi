@@ -345,8 +345,9 @@ public class OneCityActivity extends AppCompatActivity {
                 LogUtil.e(place);
                 collapsingToolbar .setTitle(place);
                 new GetWeatherData().execute(Urls.WEATHER_URL);
-                mLocationClient.stop();
+
             }
+            mLocationClient.stop();
         }
     }
 
