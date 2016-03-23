@@ -89,7 +89,18 @@
                             android:clickable="true"
                             android:foreground="?android:attr/selectableItemBackground"
                             />
-
+                        <com.wendu.wendutianqi.view.HoursCard
+                            android:id="@+id/one_city_hourscard"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="3dp"
+                            app:cardCornerRadius="6dp"
+                            app:cardElevation="6dp"
+                            app:contentPadding="10dp"
+                            app:cardPreventCornerOverlap="true"
+                            app:cardUseCompatPadding="true"
+                            android:clickable="true"
+                            android:foreground="?android:attr/selectableItemBackground"/>
                 </LinearLayout>
             </RelativeLayout>
         </ScrollView>

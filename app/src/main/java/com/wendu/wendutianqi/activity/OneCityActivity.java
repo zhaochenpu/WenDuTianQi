@@ -41,6 +41,7 @@ import com.wendu.wendutianqi.utils.LogUtil;
 import com.wendu.wendutianqi.utils.SnackbarUtil;
 import com.wendu.wendutianqi.utils.SystemBarUtil;
 import com.wendu.wendutianqi.view.ErrorView;
+import com.wendu.wendutianqi.view.HoursCard;
 import com.wendu.wendutianqi.view.NowCard;
 import com.wendu.wendutianqi.view.SystemBarTintManager;
 import com.wendu.wendutianqi.view.flowingdrawer.FlowingView;
@@ -73,6 +74,7 @@ public class OneCityActivity extends AppCompatActivity {
     private ImageView headImageView;
     private ScrollView scrollView;
     private NowCard nowCard;
+    private HoursCard hoursCard;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -140,6 +142,8 @@ public class OneCityActivity extends AppCompatActivity {
         setHead();
 
         nowCard=(NowCard) findViewById(R.id.one_city_nowcard);
+        hoursCard=(HoursCard) findViewById(R.id.one_city_hourscard);
+
 
         errorView=(ErrorView) findViewById(R.id.one_city_error);
     }
@@ -266,8 +270,13 @@ public class OneCityActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                LogUtil.e("jsonData:..."+jsonData);
+
                 List<HoursWeather> hoursWeathers= gson.fromJson(jsonData, new TypeToken<List<HoursWeather>>() {}.getType());
+                if(hoursWeathers!=null){
+                    hoursCard.setData(hoursWeathers);
+                }else{
+                    hoursCard.setVisibility(View.GONE);
+                }
 
 
             }else {
