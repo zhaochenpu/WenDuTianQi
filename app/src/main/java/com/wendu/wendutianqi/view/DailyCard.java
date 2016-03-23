@@ -75,6 +75,7 @@ public class DailyCard extends CardView{
         {
             try {
                 Date date=sdf.parse(dailyForecast.get(position).getDate());
+
             } catch (ParseException e) {
                 e.printStackTrace();
             }
