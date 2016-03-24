@@ -178,7 +178,7 @@ public class HoursWeather {
         }
         switch (code){
             case 0:
-                jc="不定风向";
+                jc="";
                 break;
             case 1:
                 jc="东北风";

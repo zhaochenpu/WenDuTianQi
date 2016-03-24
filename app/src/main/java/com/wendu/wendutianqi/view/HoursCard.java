@@ -96,6 +96,7 @@ public class HoursCard extends CardView{
             hoursWeathersall.add(tomorrowposition+1,addwen);
         }else if(tomorrow) {
             HoursWeather addwen=new HoursWeather();
+            addwen.setJf("明天");
             hoursWeathersall.add(tomorrowposition,addwen);
         }
 

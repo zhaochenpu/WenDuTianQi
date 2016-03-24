@@ -5,17 +5,29 @@
     android:background="@android:color/transparent"
     android:clickable="true">
     <LinearLayout
-        android:id="@+id/vGlobalMenuHeader"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/menu_header_iv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:text="soul.mxn"
-            android:textColor="#2d5d82"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:padding="10dp"
+            android:layout_gravity="center_vertical"
+            android:text="@string/app_name"
+            android:textColor="@color/PrimaryText"
             android:textSize="16sp"
             android:textStyle="bold" />
 
