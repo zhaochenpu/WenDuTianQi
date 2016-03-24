@@ -15,6 +15,7 @@ import com.wendu.wendutianqi.R;
 import com.wendu.wendutianqi.model.DailyForecast;
 import com.wendu.wendutianqi.model.HoursWeather;
 import com.wendu.wendutianqi.utils.LogUtil;
+import com.wendu.wendutianqi.utils.StringUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -47,11 +48,12 @@ public class DailyCard extends CardView{
     public void initView(){
         daily_card_recyclerview=(RecyclerView) view.findViewById(R.id.daily_card_recyclerview);
         calendar = Calendar.getInstance();
+        sdf=new SimpleDateFormat("yyyy-MM-dd");
     }
 
     public void setData(List<DailyForecast> dailyForecast){
         this.dailyForecast=dailyForecast;
-        SimpleDateFormat sdf=new SimpleDateFormat();
+
         daily_card_recyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
         daily_card_recyclerview.setAdapter(mAdapter = new Hourdapter());
     }
@@ -73,13 +75,18 @@ public class DailyCard extends CardView{
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position)
         {
-            try {
-                Date date=sdf.parse(dailyForecast.get(position).getDate());
 
-            } catch (ParseException e) {
-                e.printStackTrace();
+            if(TextUtils.equals(sdf.format(new Date()),dailyForecast.get(position).getDate())){
+                holder.daily_forecats_week.setText("今天");
+            }else{
+                holder.daily_forecats_week.setText(StringUtils.getWeekOfDate(dailyForecast.get(position).getDate()));
             }
 
+            holder.daily_forecats_date.setText(StringUtils.getMonthDay(dailyForecast.get(position).getDate()));
+            holder.daily_forecats_day.setText(dailyForecast.get(position).getCond().getTxt_d()+" "+dailyForecast.get(position).getTmp().getMax()+"℃");
+            holder.daily_forecats_night.setText(dailyForecast.get(position).getCond().getTxt_n()+" "+dailyForecast.get(position).getTmp().getMin()+"℃");
+            holder.daily_forecats_fengxiang.setText(dailyForecast.get(position).getWind().getDir());
+            holder.daily_forecats_fengli.setText(dailyForecast.get(position).getWind().getSc());
         }
 
         @Override
@@ -105,18 +112,6 @@ public class DailyCard extends CardView{
                 daily_forecats_fengli = (TextView) view.findViewById(R.id.daily_forecats_fengli);
             }
         }
-    }
-
-    public static String getWeekOfDate(Date dt) {
-        String[] weekDays = {"星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"};
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(dt);
-
-        int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
-        if (w < 0)
-            w = 0;
-
-        return weekDays[w];
     }
 
 

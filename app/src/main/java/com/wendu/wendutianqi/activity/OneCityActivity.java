@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +17,7 @@ import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -40,6 +42,7 @@ import com.wendu.wendutianqi.net.Urls;
 import com.wendu.wendutianqi.utils.LogUtil;
 import com.wendu.wendutianqi.utils.SnackbarUtil;
 import com.wendu.wendutianqi.utils.SystemBarUtil;
+import com.wendu.wendutianqi.view.DailyCard;
 import com.wendu.wendutianqi.view.ErrorView;
 import com.wendu.wendutianqi.view.HoursCard;
 import com.wendu.wendutianqi.view.NowCard;
@@ -72,9 +75,9 @@ public class OneCityActivity extends AppCompatActivity {
     private ErrorView errorView;
     private CoordinatorLayout coordinatorLayout;
     private ImageView headImageView;
-    private ScrollView scrollView;
     private NowCard nowCard;
     private HoursCard hoursCard;
+    private DailyCard dailyCard;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,7 +118,7 @@ public class OneCityActivity extends AppCompatActivity {
         mSwipeLayout.setProgressViewOffset(false, 0,  (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
         mSwipeLayout.setRefreshing(true);
 
-        scrollView=(ScrollView) findViewById(R.id.one_city_scroll);
+
 
         mLeftDrawerLayout = (LeftDrawerLayout) findViewById(R.id.one_city_drawerlayout);
         FragmentManager fm = getSupportFragmentManager();
@@ -140,10 +143,10 @@ public class OneCityActivity extends AppCompatActivity {
         headImageView=(ImageView) findViewById(R.id.one_city_iv);
 
         setHead();
-
+//        one_city_scroll=(NestedScrollView) findViewById(R.id.one_city_scroll);
         nowCard=(NowCard) findViewById(R.id.one_city_nowcard);
         hoursCard=(HoursCard) findViewById(R.id.one_city_hourscard);
-
+        dailyCard=(DailyCard) findViewById(R.id.one_city_dailycard);
 
         errorView=(ErrorView) findViewById(R.id.one_city_error);
     }
@@ -222,7 +225,7 @@ public class OneCityActivity extends AppCompatActivity {
                         String daily_forecast =MyJson.getString(jsonObject,"daily_forecast");
                         LogUtil.e(daily_forecast);
                         List<DailyForecast> dailyForecast= gson.fromJson(daily_forecast, new TypeToken<List<DailyForecast>>() {}.getType());
-
+                        dailyCard.setData(dailyForecast);
 
 
                         SnackbarUtil.showShortInfo(coordinatorLayout," 天气数据已更新 ~O(∩_∩)O~");
@@ -273,6 +276,7 @@ public class OneCityActivity extends AppCompatActivity {
 
                 List<HoursWeather> hoursWeathers= gson.fromJson(jsonData, new TypeToken<List<HoursWeather>>() {}.getType());
                 if(hoursWeathers!=null){
+                    hoursCard.setVisibility(View.VISIBLE);
                     hoursCard.setData(hoursWeathers);
                 }else{
                     hoursCard.setVisibility(View.GONE);

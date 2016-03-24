@@ -150,7 +150,7 @@ public class DailyForecast {
         private String ss;//日落
     }
 
-    private static class  Cond{
+    public static class  Cond{
         public String getTxt_d() {
             return txt_d;
         }
