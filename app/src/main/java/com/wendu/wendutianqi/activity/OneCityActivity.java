@@ -2,6 +2,7 @@ package com.wendu.wendutianqi.activity;
 
 
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -19,12 +20,8 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ScrollView;
-
-import com.activeandroid.util.Log;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -35,7 +32,6 @@ import com.wendu.wendutianqi.fragment.MyMenuFragment;
 import com.wendu.wendutianqi.model.AQI;
 import com.wendu.wendutianqi.model.DailyForecast;
 import com.wendu.wendutianqi.model.HoursWeather;
-import com.wendu.wendutianqi.model.WeatherFirst;
 import com.wendu.wendutianqi.model.WeatherNow;
 import com.wendu.wendutianqi.net.Location;
 import com.wendu.wendutianqi.net.MyJson;
@@ -44,7 +40,6 @@ import com.wendu.wendutianqi.net.Urls;
 import com.wendu.wendutianqi.utils.LogUtil;
 import com.wendu.wendutianqi.utils.SnackbarUtil;
 import com.wendu.wendutianqi.utils.SystemBarUtil;
-import com.wendu.wendutianqi.utils.ToastUtil;
 import com.wendu.wendutianqi.view.DailyCard;
 import com.wendu.wendutianqi.view.ErrorView;
 import com.wendu.wendutianqi.view.HoursCard;
@@ -56,8 +51,6 @@ import com.wendu.wendutianqi.view.flowingdrawer.LeftDrawerLayout;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.lang.reflect.TypeVariable;
 import java.util.HashMap;
 import java.util.List;
 
@@ -73,7 +66,7 @@ public class OneCityActivity extends AppCompatActivity {
     private SwipeRefreshLayout mSwipeLayout;
     public LocationClient mLocationClient = null;
     public BDLocationListener myListener = new MyLocationListener();
-    private String place, cityId;
+    private String place, cityId,City1;
 //    private boolean place2;
     private ErrorView errorView;
     private CoordinatorLayout coordinatorLayout;
@@ -81,17 +74,30 @@ public class OneCityActivity extends AppCompatActivity {
     private NowCard nowCard;
     private HoursCard hoursCard;
     private DailyCard dailyCard;
+    private boolean location=false;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.one_city);
 
+        Intent intent=getIntent();
+        City1=intent.getStringExtra(City1);
+        if(TextUtils.isEmpty(City1)){
+            location=true;
+            mLocationClient = new LocationClient(OneCityActivity.this);     //声明LocationClient类
+            mLocationClient.registerLocationListener(myListener);
+            Location.initLocation(mLocationClient);
+            mLocationClient.start();
+        }else{
+            location=false;
+            place=City1;
+            collapsingToolbar .setTitle(place);
+            new GetWeatherData().execute(Urls.WEATHER_URL);
+        }
+
         initView();
 
-        mLocationClient = new LocationClient(OneCityActivity.this);     //声明LocationClient类
-        mLocationClient.registerLocationListener(myListener);
-        Location.initLocation(mLocationClient);
-        mLocationClient.start();
+
 
         setListener();
     }
@@ -117,10 +123,23 @@ public class OneCityActivity extends AppCompatActivity {
         }
         mLeftDrawerLayout.setFluidView(mFlowingView);
         mLeftDrawerLayout.setMenuFragment(mMenuFragment);
+        mMenuFragment.setMenuItemSelectedListener(new MyMenuFragment.MenuItemSelectedListener() {
+            @Override
+            public void MenuItemSelectedListener(MenuItem item) {
+                mLeftDrawerLayout.toggle();
+                switch (item.getItemId()){
+                    case R.id.menu_citylist:
+                        break;
+
+                }
+            }
+        });
 
         toolbar = (Toolbar) findViewById(R.id.one_city_toolbar);
+        if(location){
+            toolbar.setLogo(R.mipmap.location_white);
+        }
 
-        toolbar.setLogo(R.mipmap.location_white);
         toolbar.setNavigationIcon(R.mipmap.menu_white);
         setSupportActionBar(toolbar);
 //        ab = getSupportActionBar();
@@ -305,7 +324,6 @@ public class OneCityActivity extends AppCompatActivity {
 //                if (swatch != null) {
 //                    collapsingToolbar.setContentScrimColor(swatch.getRgb());
 //                    collapsingToolbar.setExpandedTitleColor(swatch.getBodyTextColor());
-//                    SystemBarUtil.setStatusBarColor(MainActivity.this,tintManager,swatch.getRgb());
 //                }
 //                if (swatch2 != null) {
 //                    collapsingToolbar.setExpandedTitleColor(swatch2.getBodyTextColor());

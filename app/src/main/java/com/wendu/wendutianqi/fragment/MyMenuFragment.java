@@ -20,6 +20,7 @@ public class MyMenuFragment extends MenuFragment {
     private  View view,headview;
     private ImageView menu_header_iv;
     private NavigationView navigationView;
+    public  MenuItemSelectedListener misl;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,18 +42,26 @@ public class MyMenuFragment extends MenuFragment {
         headview=navigationView.getHeaderView(0);
         menu_header_iv=(ImageView) headview.findViewById(R.id.menu_header_iv);
         menu_header_iv.setImageResource(R.mipmap.time2016);
-//        mMenuFragment.getNavigationView().setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-//            @Override
-//            public boolean onNavigationItemSelected(MenuItem item) {
-//                item.setChecked(true);
-//                SnackbarUtil.ShortSnackbar(coordinatorLayout,item.getTitle()+"");
-//                return false;
-//            }
-//        });
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                item.setChecked(true);
+                misl.MenuItemSelectedListener(item);
+                return false;
+            }
+        });
     }
 
 //    public NavigationView getNavigationView(){
 //        return navigationView;
 //    }
+
+    public interface MenuItemSelectedListener{
+        public void MenuItemSelectedListener(MenuItem item);
+    }
+
+    public void setMenuItemSelectedListener(MenuItemSelectedListener misl){
+        this.misl=misl;
+    }
 
 }
