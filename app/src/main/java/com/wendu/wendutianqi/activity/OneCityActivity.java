@@ -51,6 +51,8 @@ import com.wendu.wendutianqi.view.flowingdrawer.LeftDrawerLayout;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -64,8 +66,8 @@ public class OneCityActivity extends AppCompatActivity {
     private LeftDrawerLayout mLeftDrawerLayout;
     private SystemBarTintManager tintManager;
     private SwipeRefreshLayout mSwipeLayout;
-    public LocationClient mLocationClient = null;
-    public BDLocationListener myListener = new MyLocationListener();
+    private LocationClient mLocationClient = null;
+    private BDLocationListener myListener = new MyLocationListener();
     private String place, cityId,City1;
 //    private boolean place2;
     private ErrorView errorView;
@@ -74,7 +76,9 @@ public class OneCityActivity extends AppCompatActivity {
     private NowCard nowCard;
     private HoursCard hoursCard;
     private DailyCard dailyCard;
-    private boolean location=false;
+    private boolean location=true;
+    private   MyMenuFragment mMenuFragment;
+    private Calendar calendar;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,24 +120,14 @@ public class OneCityActivity extends AppCompatActivity {
 
         mLeftDrawerLayout = (LeftDrawerLayout) findViewById(R.id.one_city_drawerlayout);
         FragmentManager fm = getSupportFragmentManager();
-        MyMenuFragment mMenuFragment = (MyMenuFragment) fm.findFragmentById(R.id.one_city_menu);
+        mMenuFragment = (MyMenuFragment) fm.findFragmentById(R.id.one_city_menu);
         FlowingView mFlowingView = (FlowingView) findViewById(R.id.one_city_flowing);
         if (mMenuFragment == null) {
             fm.beginTransaction().add(R.id.one_city_menu, mMenuFragment = new MyMenuFragment()).commit();
         }
         mLeftDrawerLayout.setFluidView(mFlowingView);
         mLeftDrawerLayout.setMenuFragment(mMenuFragment);
-        mMenuFragment.setMenuItemSelectedListener(new MyMenuFragment.MenuItemSelectedListener() {
-            @Override
-            public void MenuItemSelectedListener(MenuItem item) {
-                mLeftDrawerLayout.toggle();
-                switch (item.getItemId()){
-                    case R.id.menu_citylist:
-                        break;
 
-                }
-            }
-        });
 
         toolbar = (Toolbar) findViewById(R.id.one_city_toolbar);
         if(location){
@@ -171,6 +165,23 @@ public class OneCityActivity extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 mLocationClient.start();
+            }
+        });
+
+        mMenuFragment.setMenuItemSelectedListener(new MyMenuFragment.MenuItemSelectedListener() {
+            @Override
+            public void MenuItemSelectedListener(MenuItem item) {
+                mLeftDrawerLayout.toggle();
+                switch (item.getItemId()){
+                    case R.id.menu_citylist:
+                        Intent intent =new Intent(OneCityActivity.this,SelectCity.class);
+                        startActivity(intent);
+                        break;
+                    case R.id.menu_search:
+                        Intent intent2 =new Intent(OneCityActivity.this,TemporaryFind.class);
+                        startActivity(intent2);
+                        break;
+                }
             }
         });
 
@@ -227,7 +238,18 @@ public class OneCityActivity extends AppCompatActivity {
                         String now =MyJson.getString(jsonObject,"now");
                         WeatherNow weatherNow= gson.fromJson(now, WeatherNow.class);
                         nowCard.setData(weatherNow,aqi1);
-
+                        int hour=calendar.get(Calendar.HOUR_OF_DAY);
+                        if(weatherNow.getCond().getTxt().contains("晴")){
+                            headImageView.setImageResource(R.mipmap.flower);
+                        }else if(weatherNow.getCond().getTxt().contains("云")){
+                            headImageView.setImageResource(R.mipmap.duoyun_day);
+                        }else if(weatherNow.getCond().getTxt().contains("阴")){
+                            headImageView.setImageResource(R.mipmap.yin_youth);
+                        }else if(weatherNow.getCond().getTxt().contains("雾")||weatherNow.getCond().getTxt().contains("霾")){
+                            headImageView.setImageResource(R.mipmap.wu);
+                        }else if(weatherNow.getCond().getTxt().contains("雨")){
+                            headImageView.setImageResource(R.mipmap.yu);
+                        }
 
                         String daily_forecast =MyJson.getString(jsonObject,"daily_forecast");
                         LogUtil.e(daily_forecast);

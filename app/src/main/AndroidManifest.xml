@@ -45,6 +45,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.OneCityActivity"></activity>
+        <activity android:name=".activity.SelectCity"></activity>
+
     </application>
 
 </manifest>

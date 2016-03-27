@@ -1,14 +1,33 @@
 package com.wendu.wendutianqi.activity;
 
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
 import com.wendu.wendutianqi.R;
+import com.wendu.wendutianqi.net.Location;
+import com.wendu.wendutianqi.net.Urls;
+import com.wendu.wendutianqi.utils.CitySPUtils;
+import com.wendu.wendutianqi.utils.LogUtil;
+import com.wendu.wendutianqi.utils.SystemBarUtil;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by el on 2016/3/25.
@@ -16,24 +35,58 @@ import com.wendu.wendutianqi.R;
 public class SelectCity extends AppCompatActivity {
 
     private Toolbar toolbar;
-
+    private RecyclerView recyclerView;
+    private CoordinatorLayout select_city_coordinatorLayou;
+    private Map  citymap;
+    private List<String> citylist;
+    private  Selectdapter mAdapter;
+    private LocationClient mLocationClient = null;
+    private BDLocationListener myListener = new MyLocationListener();
+    private  String place;
+    private  TextView select_city_location_name;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.select_activity);
+
+        SystemBarUtil.setStatusBarColor(SelectCity.this,R.color.colorPrimary);
+
         initView();
+
+        mLocationClient = new LocationClient(SelectCity.this);     //声明LocationClient类
+        mLocationClient.registerLocationListener(myListener);
+        Location.initLocation(mLocationClient);
+        mLocationClient.start();
+
+        citymap= CitySPUtils.getAll(SelectCity.this);
+        if(citymap!=null){
+            for (Object entry : citymap.keySet()){
+                citylist.add((String)entry);
+            }
+            for (Object entry : citymap.keySet()){
+                citylist.add((String)entry);
+            }
+            recyclerView=(RecyclerView) findViewById(R.id.select_recyclerview);
+            recyclerView.setLayoutManager(new LinearLayoutManager(SelectCity.this));
+            recyclerView.setAdapter(mAdapter = new Selectdapter());
+        }
+
     }
 
     public void initView(){
+        select_city_coordinatorLayou=(CoordinatorLayout) findViewById(R.id.select_city_coordinatorLayou);
         toolbar = (Toolbar) findViewById(R.id.select_toolbar);
         toolbar.setTitle("选择城市");
         setSupportActionBar(toolbar);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
+
+        select_city_location_name=(TextView) findViewById(R.id.select_city_location_name);
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -50,6 +103,74 @@ public class SelectCity extends AppCompatActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    class Selectdapter extends RecyclerView.Adapter<Selectdapter.MyViewHolder>
+    {
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+        {
+            MyViewHolder holder = new MyViewHolder(LayoutInflater.from(
+                    SelectCity.this).inflate(R.layout.select_city_item, parent,
+                    false));
+            return holder;
+        }
+
+        @Override
+        public void onBindViewHolder(MyViewHolder holder, int position)
+        {
+                holder.select_city_name.setText(citylist.get(position));
+
+        }
+
+        @Override
+        public int getItemCount()
+        {
+            if(citylist==null){
+                return 0;
+            }else{
+                return citylist.size();
+            }
+
+        }
+
+
+        class MyViewHolder extends RecyclerView.ViewHolder
+        {
+
+            TextView select_city_name;
+
+            public MyViewHolder(View view)
+            {
+                super(view);
+                select_city_name = (TextView) view.findViewById(R.id.select_city_name);
+            }
+        }
+    }
+
+
+    class MyLocationListener implements BDLocationListener {
+        @Override
+        public void onReceiveLocation(BDLocation bdLocation) {
+            if(Location.result(SelectCity.this,bdLocation,select_city_coordinatorLayou)){
+                LogUtil.e("\n" + bdLocation.getCity()+":" + bdLocation.getCityCode()+"\n" + bdLocation.getDistrict());
+
+//                if(place2){
+                place=bdLocation.getCity();
+                if(place.endsWith("市")){
+                    place= bdLocation.getCity().substring(0,place.length()-1);
+                }
+//                }else{
+//                    place=bdLocation.getDistrict();
+//                    if(place.endsWith("区")){
+//                        place= bdLocation.getDistrict().substring(0,bdLocation.getDistrict().length()-1);
+//                    }
+//                }
+                select_city_location_name.setText(place);
+            }
+            mLocationClient.stop();
         }
     }
 

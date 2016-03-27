@@ -1,24 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.wendu.wendutianqi.view.flowingdrawer.LeftDrawerLayout android:id="@+id/one_city_drawerlayout"
+<android.support.design.widget.CoordinatorLayout
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:card_view="http://schemas.android.com/tools">
-    <!--content-->
-
-<android.support.design.widget.CoordinatorLayout
-    android:id="@+id/one_city_CoordinatorLayout"
+    android:id="@+id/temporary_find_CoordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     >
     <android.support.design.widget.AppBarLayout
-        android:id="@+id/one_city_AppBarLayout"
+        android:id="@+id/temporary_find_AppBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
         <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/one_city_CollapsingToolbarLayout"
+            android:id="@+id/temporary_find_CollapsingToolbarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:expandedTitleMarginStart="40dp"
@@ -34,7 +28,7 @@
             enterAlwaysCollapsed - 当你的View已经设置minHeight属性又使用此标志时，你的View只能以最小高度进入，只有当滚动视图到达顶部时才扩大到完整高度。-->
 
             <ImageView
-                android:id="@+id/one_city_iv"
+                android:id="@+id/temporary_find_iv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:scaleType="centerCrop"
@@ -45,7 +39,7 @@
                 />
 
             <android.support.v7.widget.Toolbar
-                android:id="@+id/one_city_toolbar"
+                android:id="@+id/temporary_find_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:theme="@style/Theme.AppCompat.NoActionBar"
@@ -61,12 +55,12 @@
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
         <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/one_city_swipe"
+            android:id="@+id/temporary_find_swipe"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             >
             <android.support.v4.widget.NestedScrollView
-                android:id="@+id/one_city_scroll"
+                android:id="@+id/temporary_find_scroll"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 >
@@ -79,7 +73,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
                         <com.wendu.wendutianqi.view.NowCard
-                            android:id="@+id/one_city_nowcard"
+                            android:id="@+id/temporary_find_nowcard"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="3dp"
@@ -93,7 +87,7 @@
                             android:foreground="?android:attr/selectableItemBackground"
                             />
                         <com.wendu.wendutianqi.view.HoursCard
-                            android:id="@+id/one_city_hourscard"
+                            android:id="@+id/temporary_find_hourscard"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="3dp"
@@ -103,7 +97,7 @@
                             app:cardPreventCornerOverlap="true"
                             app:cardUseCompatPadding="true" />
                         <com.wendu.wendutianqi.view.DailyCard
-                            android:id="@+id/one_city_dailycard"
+                            android:id="@+id/temporary_find_dailycard"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="3dp"
@@ -117,7 +111,7 @@
                             />
                     </LinearLayout>
                     <com.wendu.wendutianqi.view.ErrorView
-                        android:id="@+id/one_city_error"
+                        android:id="@+id/temporary_find_error"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"/>
                 </RelativeLayout>
@@ -126,26 +120,3 @@
     </LinearLayout>
 
     </android.support.design.widget.CoordinatorLayout>
-
-    <!--menu-->
-    <RelativeLayout
-        android:layout_width="280dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:clipChildren="false"
-        >
-        <com.wendu.wendutianqi.view.flowingdrawer.FlowingView
-            android:id="@+id/one_city_flowing"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-        <FrameLayout
-            android:id="@+id/one_city_menu"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_marginRight="20dp"
-            android:paddingRight="10dp"
-            />
-    </RelativeLayout>
-
-</com.wendu.wendutianqi.view.flowingdrawer.LeftDrawerLayout>

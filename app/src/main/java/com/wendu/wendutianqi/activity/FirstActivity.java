@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.view.Window;
 
 import com.wendu.wendutianqi.R;
+import com.wendu.wendutianqi.utils.CitySPUtils;
 import com.wendu.wendutianqi.utils.LogUtil;
 import com.wendu.wendutianqi.utils.SPUtils;
 import com.wendu.wendutianqi.utils.SystemBarUtil;
@@ -28,11 +29,11 @@ public class FirstActivity extends Activity {
 		setContentView(R.layout.first_layout);
 		SystemBarUtil.transparencyBar(FirstActivity.this);
 		first=(boolean) SPUtils.get(this,"first",true);
-		if(first){
-
-			SPUtils.put(this,"first",false);
-		}
-		LogUtil.e("................"+first);
+//		if(first){
+//			CitySPUtils.put(this,"location","0");
+//			SPUtils.put(this,"first",false);
+//		}
+//		LogUtil.e("................"+first);
 		City2=(String) SPUtils.get(this,"City2","");
         secretTextView1 = (SecretTextView)findViewById(R.id.textview1);
 
