@@ -17,7 +17,9 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.wendu.wendutianqi.R;
@@ -37,11 +39,14 @@ import com.wendu.wendutianqi.view.ErrorView;
 import com.wendu.wendutianqi.view.FindCityDialog;
 import com.wendu.wendutianqi.view.HoursCard;
 import com.wendu.wendutianqi.view.NowCard;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.List;
+
 
 /**
  * Created by noname on 2016/3/26.
@@ -89,6 +94,12 @@ public class TemporaryFind extends AppCompatActivity{
 
         toolbar = (Toolbar) findViewById(R.id.temporary_find_toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 //        toolbar.setNavigationIcon(R.mipmap.menu_white);
 //        setSupportActionBar(toolbar);
 ////        ab = getSupportActionBar();
@@ -115,7 +126,7 @@ public class TemporaryFind extends AppCompatActivity{
         findCityDialog.setOnPositiveListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TextInputEditText editText=findCityDialog.getEditText();
+                EditText editText=findCityDialog.getEditText();
                 place=editText.getText().toString();
                 mSwipeLayout.setRefreshing(true);
                 new GetWeatherData().execute(Urls.WEATHER_URL);
@@ -132,7 +143,10 @@ public class TemporaryFind extends AppCompatActivity{
         mSwipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new GetWeatherData().execute(Urls.WEATHER_URL);
+                if(TextUtils.isEmpty(place)){
+                    new GetWeatherData().execute(Urls.WEATHER_URL);
+                }
+
             }
         });
 
@@ -197,6 +211,7 @@ public class TemporaryFind extends AppCompatActivity{
                 }
 
                 if(TextUtils.equals("ok",status)){
+                    toolbar.setTitle(place);
 
                     temporary_find_scroll.setVisibility(View.VISIBLE);
 

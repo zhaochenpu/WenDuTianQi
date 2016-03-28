@@ -1,19 +1,17 @@
 package com.wendu.wendutianqi.activity;
 
+
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.baidu.location.BDLocation;
@@ -21,13 +19,14 @@ import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.wendu.wendutianqi.R;
 import com.wendu.wendutianqi.net.Location;
-import com.wendu.wendutianqi.net.Urls;
 import com.wendu.wendutianqi.utils.CitySPUtils;
 import com.wendu.wendutianqi.utils.LogUtil;
 import com.wendu.wendutianqi.utils.SystemBarUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 
 /**
  * Created by el on 2016/3/25.
@@ -37,13 +36,13 @@ public class SelectCity extends AppCompatActivity {
     private Toolbar toolbar;
     private RecyclerView recyclerView;
     private CoordinatorLayout select_city_coordinatorLayou;
-    private Map  citymap;
+    private Map citymap;
     private List<String> citylist;
     private  Selectdapter mAdapter;
     private LocationClient mLocationClient = null;
     private BDLocationListener myListener = new MyLocationListener();
     private  String place;
-    private  TextView select_city_location_name;
+    private TextView select_city_location_name;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,9 +59,7 @@ public class SelectCity extends AppCompatActivity {
 
         citymap= CitySPUtils.getAll(SelectCity.this);
         if(citymap!=null){
-            for (Object entry : citymap.keySet()){
-                citylist.add((String)entry);
-            }
+            citylist=new ArrayList<>();
             for (Object entry : citymap.keySet()){
                 citylist.add((String)entry);
             }
@@ -78,7 +75,7 @@ public class SelectCity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.select_toolbar);
         toolbar.setTitle("选择城市");
         setSupportActionBar(toolbar);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+//        getActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,7 +118,7 @@ public class SelectCity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position)
         {
-                holder.select_city_name.setText(citylist.get(position));
+                holder.select_city_name.setText((String)citylist.get(position)+" ");
 
         }
 

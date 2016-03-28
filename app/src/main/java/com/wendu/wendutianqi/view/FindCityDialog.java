@@ -3,9 +3,12 @@ package com.wendu.wendutianqi.view;
 import android.app.Dialog;
 import android.content.Context;
 import android.support.design.widget.TextInputEditText;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.wendu.wendutianqi.R;
 
@@ -30,6 +33,22 @@ public class FindCityDialog extends Dialog{
     public  void initView(){
 
         find_city_edit=(TextInputEditText) mView.findViewById(R.id.find_city_edit);
+        find_city_edit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         find=(Button)  mView.findViewById(R.id.find_city_find);
         cancel=(Button)  mView.findViewById(R.id.find_city_cancel);
 
@@ -50,7 +69,7 @@ public class FindCityDialog extends Dialog{
         cancel.setOnClickListener(listener);
     }
 
-    public TextInputEditText getEditText(){
+    public EditText getEditText(){
         return find_city_edit;
     }
 
