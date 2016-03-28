@@ -21,7 +21,7 @@
                         android:id="@+id/now_card_date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="7"
+                        android:text=""
                         android:textColor="@color/white"
                         android:textSize="24sp"/>
                     <TextView
@@ -29,7 +29,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10sp"
-                        android:text="晴"
+                        android:text=""
                         android:textColor="@color/white"
                         android:textSize="24sp"/>
                 </LinearLayout>
@@ -51,7 +51,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="120"
+                        android:text=""
                         android:textColor="@android:color/white"
                         android:textSize="12sp" />
                     <TextView
@@ -60,7 +60,7 @@
                         android:layout_height="wrap_content"
                         android:padding="2sp"
                         android:layout_marginLeft="5dp"
-                        android:text="中度污染"
+                        android:text=""
                         android:textColor="@android:color/white"
                         android:textSize="12sp" />
 
@@ -70,7 +70,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:text="体感：26℃"
+                    android:text=""
                     android:textColor="@color/white"
                     android:textSize="12sp"/>
                 <TextView
@@ -78,7 +78,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:text="无持续风向 微风"
+                    android:text=""
                     android:textColor="@color/white"
                     android:textSize="12sp"/>
             </LinearLayout>
@@ -102,7 +102,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_gravity="center_horizontal"
-                android:text="26℃"
+                android:text=""
                 android:textColor="@android:color/white"
                 android:textSize="50sp"/>
         </LinearLayout>

@@ -48,7 +48,7 @@
                 android:layout_marginLeft="10dp"
                 android:text="取消"
                 android:textColor="@color/SecondaryText"
-                android:background="null"/>
+                android:background="@null"/>
 
         </LinearLayout>
     </LinearLayout>

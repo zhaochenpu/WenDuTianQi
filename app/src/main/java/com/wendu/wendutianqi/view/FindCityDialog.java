@@ -18,8 +18,8 @@ public class FindCityDialog extends Dialog{
     private TextInputEditText find_city_edit;
     private Button find,cancel;
 
-    protected FindCityDialog(Context context, boolean cancelable, OnCancelListener cancelListener) {
-        super(context, cancelable, cancelListener);
+    public FindCityDialog(Context context, int themeResId) {
+        super(context, themeResId);
         mView = LayoutInflater.from(getContext()).inflate(R.layout.find_city_dialog, null);
 
         initView();
@@ -50,7 +50,7 @@ public class FindCityDialog extends Dialog{
         cancel.setOnClickListener(listener);
     }
 
-    public View getEditText(){
+    public TextInputEditText getEditText(){
         return find_city_edit;
     }
 

@@ -46,7 +46,7 @@
         </activity>
         <activity android:name=".activity.OneCityActivity"></activity>
         <activity android:name=".activity.SelectCity"></activity>
-
+        <activity android:name=".activity.TemporaryFind"></activity>
     </application>
 
 </manifest>

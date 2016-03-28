@@ -238,7 +238,7 @@ public class OneCityActivity extends AppCompatActivity {
                         String now =MyJson.getString(jsonObject,"now");
                         WeatherNow weatherNow= gson.fromJson(now, WeatherNow.class);
                         nowCard.setData(weatherNow,aqi1);
-                        int hour=calendar.get(Calendar.HOUR_OF_DAY);
+//                        calendar.get(Calendar.HOUR_OF_DAY);
                         if(weatherNow.getCond().getTxt().contains("晴")){
                             headImageView.setImageResource(R.mipmap.flower);
                         }else if(weatherNow.getCond().getTxt().contains("云")){
