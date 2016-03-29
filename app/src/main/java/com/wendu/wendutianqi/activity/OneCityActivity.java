@@ -9,9 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -84,20 +82,10 @@ public class OneCityActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.one_city);
 
-        Intent intent=getIntent();
-        City1=intent.getStringExtra(City1);
-        if(TextUtils.isEmpty(City1)){
-            location=true;
-            mLocationClient = new LocationClient(OneCityActivity.this);     //声明LocationClient类
-            mLocationClient.registerLocationListener(myListener);
-            Location.initLocation(mLocationClient);
-            mLocationClient.start();
-        }else{
-            location=false;
-            place=City1;
-            collapsingToolbar .setTitle(place);
-            new GetWeatherData().execute(Urls.WEATHER_URL);
-        }
+        mLocationClient = new LocationClient(OneCityActivity.this);     //声明LocationClient类
+        mLocationClient.registerLocationListener(myListener);
+        Location.initLocation(mLocationClient);
+        mLocationClient.start();
 
         initView();
 
@@ -164,7 +152,13 @@ public class OneCityActivity extends AppCompatActivity {
         mSwipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mLocationClient.start();
+
+                if(location){
+                    mLocationClient.start();
+                }else{
+                    new GetWeatherData().execute(Urls.WEATHER_URL);
+                }
+
             }
         });
 
@@ -175,7 +169,7 @@ public class OneCityActivity extends AppCompatActivity {
                 switch (item.getItemId()){
                     case R.id.menu_citylist:
                         Intent intent =new Intent(OneCityActivity.this,SelectCity.class);
-                        startActivity(intent);
+                        startActivityForResult(intent,100);
                         break;
                     case R.id.menu_search:
                         Intent intent2 =new Intent(OneCityActivity.this,TemporaryFind.class);
@@ -250,6 +244,7 @@ public class OneCityActivity extends AppCompatActivity {
                         }else if(weatherNow.getCond().getTxt().contains("雨")){
                             headImageView.setImageResource(R.mipmap.yu);
                         }
+//                        setHead();
 
                         String daily_forecast =MyJson.getString(jsonObject,"daily_forecast");
                         LogUtil.e(daily_forecast);
@@ -400,6 +395,34 @@ public class OneCityActivity extends AppCompatActivity {
         }
     }
 
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case 100:
+                if (resultCode == RESULT_OK) {
+                    String returnedData = data.getStringExtra("select_place");
+                    LogUtil.e(returnedData+".......");
+                    if(TextUtils.equals(returnedData,"location")){
+                        if(!location){
+                            toolbar.setLogo(R.mipmap.location_white);
+                            mSwipeLayout.setRefreshing(true);
+                            mLocationClient.start();
+                        }
+                        location=true;
+
+                    }else if(!TextUtils.isEmpty(returnedData)){
+                        location=false;
+                        place=returnedData;
+                        toolbar.setLogo(null);
+                        collapsingToolbar .setTitle(place);
+                        mSwipeLayout.setRefreshing(true);
+                        new GetWeatherData().execute(Urls.WEATHER_URL);
+                    }
+                }
+                break;
+            default:
+        }
+    }
 
 
 

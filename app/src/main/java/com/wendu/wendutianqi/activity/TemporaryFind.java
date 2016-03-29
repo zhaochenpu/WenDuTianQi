@@ -1,16 +1,15 @@
 package com.wendu.wendutianqi.activity;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.TextInputEditText;
+
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.TypedValue;
@@ -56,24 +55,23 @@ public class TemporaryFind extends AppCompatActivity{
     private int bgColor,titleColor;
     private String place,cityId;
     private boolean placeCan=false;
-    private FindCityDialog findCityDialog;
     private boolean place2=false;
     private SwipeRefreshLayout mSwipeLayout;
     private ErrorView errorView;
     private CoordinatorLayout coordinatorLayout;
-    private ImageView headImageView;
     private NowCard nowCard;
     private HoursCard hoursCard;
     private DailyCard dailyCard;
-    private CollapsingToolbarLayout collapsingToolbar;
     private Toolbar toolbar;
     private NestedScrollView temporary_find_scroll;
+    private SearchView searchView;
+    private MenuItem menuItemSearch;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.temporary_find);
 
-        SystemBarUtil.setStatusBarColor(this,R.color.colorPrimary);
+        SystemBarUtil.setStatusBarColor(this,getResources().getColor(R.color.colorPrimary));
 
         initView();
 
@@ -83,9 +81,6 @@ public class TemporaryFind extends AppCompatActivity{
 
     private void initView(){
 
-        findCityDialog=new FindCityDialog(this,R.style.Dialog);
-
-
         coordinatorLayout=(CoordinatorLayout) findViewById(R.id.temporary_find_CoordinatorLayout);
 
         mSwipeLayout = (SwipeRefreshLayout)findViewById(R.id.temporary_find_swipe);
@@ -93,6 +88,7 @@ public class TemporaryFind extends AppCompatActivity{
         mSwipeLayout.setProgressViewOffset(false, 0,  (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
 
         toolbar = (Toolbar) findViewById(R.id.temporary_find_toolbar);
+        toolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white);
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,17 +96,7 @@ public class TemporaryFind extends AppCompatActivity{
                 finish();
             }
         });
-//        toolbar.setNavigationIcon(R.mipmap.menu_white);
-//        setSupportActionBar(toolbar);
-////        ab = getSupportActionBar();
 
-        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.temporary_find_CollapsingToolbarLayout);
-        collapsingToolbar.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
-
-        headImageView=(ImageView) findViewById(R.id.temporary_find_iv);
-
-        setHead();
-//        one_city_scroll=(NestedScrollView) findViewById(R.id.one_city_scroll);
         nowCard=(NowCard) findViewById(R.id.temporary_find_nowcard);
         hoursCard=(HoursCard) findViewById(R.id.temporary_find_hourscard);
         dailyCard=(DailyCard) findViewById(R.id.temporary_find_dailycard);
@@ -123,30 +109,14 @@ public class TemporaryFind extends AppCompatActivity{
 
     public void setListener(){
 
-        findCityDialog.setOnPositiveListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EditText editText=findCityDialog.getEditText();
-                place=editText.getText().toString();
-                mSwipeLayout.setRefreshing(true);
-                new GetWeatherData().execute(Urls.WEATHER_URL);
-            }
-        });
-        findCityDialog.setOnNegativeListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                findCityDialog.cancel();
-            }
-        });
-        findCityDialog.show();
-
         mSwipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if(TextUtils.isEmpty(place)){
+                if(!TextUtils.isEmpty(place)){
                     new GetWeatherData().execute(Urls.WEATHER_URL);
+                }else{
+                    SnackbarUtil.showLongWarning(coordinatorLayout," 额，很抱歉，改地址不可用...");
                 }
-
             }
         });
 
@@ -156,7 +126,36 @@ public class TemporaryFind extends AppCompatActivity{
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.collection_city, menu);
-        return true;
+
+        menuItemSearch=menu.findItem(R.id.find_city);
+        if(menuItemSearch!=null){
+            menuItemSearch.setChecked(true);
+            searchView=(SearchView) MenuItemCompat.getActionView(menuItemSearch);
+            if(searchView!=null){
+                searchView.setQueryHint("请输入城市名称");
+                searchView.setSubmitButtonEnabled(true);
+                searchView.setIconifiedByDefault(true);
+                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        place=query;
+                        mSwipeLayout.setRefreshing(true);
+                        new GetWeatherData().execute(Urls.WEATHER_URL);
+
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        return false;
+                    }
+                });
+
+            }
+
+        }
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -165,13 +164,9 @@ public class TemporaryFind extends AppCompatActivity{
             case R.id.collection_city:
                 if(placeCan){
                     CitySPUtils.put(TemporaryFind.this,place,"1");
+                    SnackbarUtil.showLongConfirm(coordinatorLayout," 该地址已添加至收藏夹");
                 }else{
                     SnackbarUtil.showLongWarning(coordinatorLayout," 额，很抱歉，改地址不可用...");
-                }
-                return true;
-            case R.id.find_city:
-                if(!findCityDialog.isShowing()){
-                    findCityDialog.show();
                 }
                 return true;
             default:
@@ -211,12 +206,14 @@ public class TemporaryFind extends AppCompatActivity{
                 }
 
                 if(TextUtils.equals("ok",status)){
-                    toolbar.setTitle(place);
 
                     temporary_find_scroll.setVisibility(View.VISIBLE);
 
                     String  basic= MyJson.getString(jsonObject,"basic");
                     cityId= MyJson.getString(basic,"id");
+                    place=MyJson.getString(basic,"city");
+                    toolbar.setTitle(place);
+
                     if(!TextUtils.isEmpty(cityId)){
 
                         new  GetHoursWeatherData().execute(Urls.WEATHER_HOUR_URL+cityId.replace("CN", "")+".html");
@@ -234,18 +231,6 @@ public class TemporaryFind extends AppCompatActivity{
                     String now =MyJson.getString(jsonObject,"now");
                     WeatherNow weatherNow= gson.fromJson(now, WeatherNow.class);
                     nowCard.setData(weatherNow,aqi1);
-//                    int hour=calendar.get(Calendar.HOUR_OF_DAY);
-                    if(weatherNow.getCond().getTxt().contains("晴")){
-                        headImageView.setImageResource(R.mipmap.flower);
-                    }else if(weatherNow.getCond().getTxt().contains("云")){
-                        headImageView.setImageResource(R.mipmap.duoyun_day);
-                    }else if(weatherNow.getCond().getTxt().contains("阴")){
-                        headImageView.setImageResource(R.mipmap.yin_youth);
-                    }else if(weatherNow.getCond().getTxt().contains("雾")||weatherNow.getCond().getTxt().contains("霾")){
-                        headImageView.setImageResource(R.mipmap.wu);
-                    }else if(weatherNow.getCond().getTxt().contains("雨")){
-                        headImageView.setImageResource(R.mipmap.yu);
-                    }
 
                     String daily_forecast =MyJson.getString(jsonObject,"daily_forecast");
                     LogUtil.e(daily_forecast);
@@ -253,6 +238,9 @@ public class TemporaryFind extends AppCompatActivity{
                     dailyCard.setData(dailyForecast);
 
                     placeCan=true;
+
+                    menuItemSearch.setChecked(false);
+
                     SnackbarUtil.showShortInfo(coordinatorLayout," 天气数据已更新 ~O(∩_∩)O~");
                 }else if(TextUtils.equals("unknown city",status)){
                         if(place2){
@@ -328,41 +316,5 @@ public class TemporaryFind extends AppCompatActivity{
         }
     }
 
-
-    /**
-     * 获取图片主颜色 设置状态栏和工具栏
-     */
-    public void setHead () {
-
-        Bitmap bitmap;
-        headImageView.setDrawingCacheEnabled(true);
-        bitmap =headImageView.getDrawingCache();
-        if(bitmap==null){
-            bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.flower);
-        }
-
-        Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
-            @Override
-            public void onGenerated(Palette palette) {
-
-                bgColor=palette.getDarkVibrantColor(getResources().getColor(R.color.white));
-                titleColor=palette.getLightMutedColor(getResources().getColor(R.color.white));
-                collapsingToolbar.setContentScrimColor(bgColor);
-                collapsingToolbar.setExpandedTitleColor(titleColor);
-                SystemBarUtil.setStatusBarColor(TemporaryFind.this,bgColor);
-//                Palette.Swatch swatch = palette.getVibrantSwatch();
-//                Palette.Swatch swatch2 = palette.getLightVibrantSwatch();
-//                if (swatch != null) {
-//                    collapsingToolbar.setContentScrimColor(swatch.getRgb());
-//                    collapsingToolbar.setExpandedTitleColor(swatch.getBodyTextColor());
-//                }
-//                if (swatch2 != null) {
-//                    collapsingToolbar.setExpandedTitleColor(swatch2.getBodyTextColor());
-////                    scrollView.setBackgroundColor(swatch2.getBodyTextColor());
-//                }
-            }
-        });
-        headImageView.setDrawingCacheEnabled(false);
-    }
 
 }

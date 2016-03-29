@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import android.view.Window;
 
 import com.wendu.wendutianqi.R;
-import com.wendu.wendutianqi.utils.CitySPUtils;
 import com.wendu.wendutianqi.utils.LogUtil;
 import com.wendu.wendutianqi.utils.SPUtils;
 import com.wendu.wendutianqi.utils.SystemBarUtil;
