@@ -208,7 +208,6 @@ public class HoursCard extends CardView{
         }
         if(!today||!tomorrow){
             day=jf2.substring(jf2.length()-6,jf2.length()-4);
-            LogUtil.e(day);
         }
         return  jf;
     }

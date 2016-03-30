@@ -18,9 +18,10 @@
         />
     <android.support.v7.widget.RecyclerView
         android:id="@+id/temporary_find_recycler"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="?attr/actionBarSize"
+        android:visibility="gone"
         />
     <LinearLayout
         android:id="@+id/temporary_find_ll"

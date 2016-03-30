@@ -10,7 +10,7 @@
         app:showAsAction="always|collapseActionView" />
     <item
         android:id="@+id/collection_city"
-        android:icon="@mipmap/ic_add_white"
         android:title="收藏"
+        android:icon="@mipmap/ic_star_border_white"
         app:showAsAction="always" />
 </menu>

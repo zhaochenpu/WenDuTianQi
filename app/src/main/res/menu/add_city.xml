@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/add_city"
-        android:icon="@mipmap/ic_star_border_white"
+        android:icon="@mipmap/ic_add_white"
         android:title="新建"
         app:showAsAction="ifRoom" />
 </menu>

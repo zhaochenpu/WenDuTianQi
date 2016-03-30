@@ -14,17 +14,17 @@ import org.json.JSONObject;
  */
 public class MyJson {
 
-    public Gson gson=new Gson();
+//    public Gson gson=new Gson();
 
-    public WeatherFirst result(String json){
-        WeatherFirst weatherFirst=gson.fromJson(json,WeatherFirst.class);
-        if(weatherFirst!=null&&!TextUtils.isEmpty(weatherFirst.status)){
-            if(TextUtils.equals("ok",weatherFirst.status)||TextUtils.equals("unknown city",weatherFirst.status)){
-                return  weatherFirst;
-            }
-        }
-        return  null;
-    }
+//    public WeatherFirst result(String json){
+//        WeatherFirst weatherFirst=gson.fromJson(json,WeatherFirst.class);
+//        if(weatherFirst!=null&&!TextUtils.isEmpty(weatherFirst.status)){
+//            if(TextUtils.equals("ok",weatherFirst.status)||TextUtils.equals("unknown city",weatherFirst.status)){
+//                return  weatherFirst;
+//            }
+//        }
+//        return  null;
+//    }
 
 
 

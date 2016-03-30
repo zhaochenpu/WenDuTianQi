@@ -1,5 +1,6 @@
 package com.wendu.wendutianqi.activity;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -9,6 +10,8 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -18,11 +21,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.wendu.wendutianqi.R;
 import com.wendu.wendutianqi.model.AQI;
+import com.wendu.wendutianqi.model.AllChinaPlace;
 import com.wendu.wendutianqi.model.DailyForecast;
 import com.wendu.wendutianqi.model.HoursWeather;
 import com.wendu.wendutianqi.model.WeatherNow;
@@ -35,6 +40,7 @@ import com.wendu.wendutianqi.utils.SnackbarUtil;
 import com.wendu.wendutianqi.utils.SystemBarUtil;
 import com.wendu.wendutianqi.view.DailyCard;
 import com.wendu.wendutianqi.view.ErrorView;
+import com.wendu.wendutianqi.view.FindCityAdapter;
 import com.wendu.wendutianqi.view.FindCityDialog;
 import com.wendu.wendutianqi.view.HoursCard;
 import com.wendu.wendutianqi.view.NowCard;
@@ -42,6 +48,7 @@ import com.wendu.wendutianqi.view.NowCard;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.litepal.crud.DataSupport;
 
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +59,6 @@ import java.util.List;
  */
 public class TemporaryFind extends AppCompatActivity{
 
-    private int bgColor,titleColor;
     private String place,cityId;
     private boolean placeCan=false;
     private boolean place2=false;
@@ -63,15 +69,23 @@ public class TemporaryFind extends AppCompatActivity{
     private HoursCard hoursCard;
     private DailyCard dailyCard;
     private Toolbar toolbar;
-    private NestedScrollView temporary_find_scroll;
+    private LinearLayout temporary_find_ll;
     private SearchView searchView;
-    private MenuItem menuItemSearch;
+    private MenuItem menuItemSearch,menuItemCollection;
+    private String from;
+    private boolean collection;
+    private RecyclerView temporary_find_recycler;
+    private FindCityAdapter findCityAdapter;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.temporary_find);
 
         SystemBarUtil.setStatusBarColor(this,getResources().getColor(R.color.colorPrimary));
+
+        Intent intent=getIntent();
+        from=intent.getStringExtra("where");
+
 
         initView();
 
@@ -90,12 +104,6 @@ public class TemporaryFind extends AppCompatActivity{
         toolbar = (Toolbar) findViewById(R.id.temporary_find_toolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
 
         nowCard=(NowCard) findViewById(R.id.temporary_find_nowcard);
         hoursCard=(HoursCard) findViewById(R.id.temporary_find_hourscard);
@@ -103,8 +111,12 @@ public class TemporaryFind extends AppCompatActivity{
 
         errorView=(ErrorView) findViewById(R.id.temporary_find_error);
 
-        temporary_find_scroll=(NestedScrollView) findViewById(R.id.temporary_find_scroll);
-        temporary_find_scroll.setVisibility(View.GONE);
+        temporary_find_ll=(LinearLayout) findViewById(R.id.temporary_find_ll);
+        temporary_find_ll.setVisibility(View.GONE);
+
+
+        temporary_find_recycler=(RecyclerView) findViewById(R.id.temporary_find_recycler);
+
     }
 
     public void setListener(){
@@ -120,33 +132,60 @@ public class TemporaryFind extends AppCompatActivity{
             }
         });
 
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(TextUtils.equals(from,"SelectCity")&&collection){
+                    Intent intent=new Intent();
+                    intent.putExtra("collection_place",place);
+                    setResult(RESULT_OK,intent);
+                }
+                finish();
+            }
+        });
+
     }
 
 
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.collection_city, menu);
-
+        menuItemCollection=menu.findItem(R.id.collection_city);
         menuItemSearch=menu.findItem(R.id.find_city);
         if(menuItemSearch!=null){
             menuItemSearch.setChecked(true);
+            menuItemSearch.expandActionView();
             searchView=(SearchView) MenuItemCompat.getActionView(menuItemSearch);
+
             if(searchView!=null){
+                searchView.onActionViewExpanded();
                 searchView.setQueryHint("请输入城市名称");
                 searchView.setSubmitButtonEnabled(true);
                 searchView.setIconifiedByDefault(true);
                 searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
                     public boolean onQueryTextSubmit(String query) {
-                        place=query;
-                        mSwipeLayout.setRefreshing(true);
-                        new GetWeatherData().execute(Urls.WEATHER_URL);
-
+                        getWeather(query);
                         return false;
                     }
 
                     @Override
                     public boolean onQueryTextChange(String newText) {
+                        if(findCityAdapter==null){
+                            List<AllChinaPlace>  citylist= DataSupport.findAll(AllChinaPlace.class);
+                            temporary_find_recycler .setLayoutManager(new LinearLayoutManager(TemporaryFind.this));
+                            temporary_find_recycler.setAdapter(findCityAdapter=new FindCityAdapter(TemporaryFind.this,citylist));
+                            findCityAdapter.setOnItemClickLitener(new FindCityAdapter.OnItemClickLitener() {
+                                @Override
+                                public void onItemClick( String itemPlace) {
+                                    getWeather(itemPlace);
+                                }
+                            });
+                        }
+                        if(temporary_find_recycler.getVisibility()==View.GONE){
+                            temporary_find_recycler.setVisibility(View.VISIBLE);
+                        }
+                        findCityAdapter.query(newText);
                         return false;
                     }
                 });
@@ -162,12 +201,22 @@ public class TemporaryFind extends AppCompatActivity{
         int id = item.getItemId();
         switch (id) {
             case R.id.collection_city:
-                if(placeCan){
-                    CitySPUtils.put(TemporaryFind.this,place,"1");
-                    SnackbarUtil.showLongConfirm(coordinatorLayout," 该地址已添加至收藏夹");
+                if(collection){
+                    collection=false;
+                    CitySPUtils.remove(TemporaryFind.this,place);
+                    menuItemCollection.setIcon(R.mipmap.ic_star_border_white);
+                    SnackbarUtil.showLongConfirm(coordinatorLayout," 该地址已取消收藏");
                 }else{
-                    SnackbarUtil.showLongWarning(coordinatorLayout," 额，很抱歉，改地址不可用...");
+                    if(placeCan){
+                        CitySPUtils.put(TemporaryFind.this,place,"1");
+                        collection=true;
+                        menuItemCollection.setIcon(R.mipmap.ic_star_white);
+                        SnackbarUtil.showLongConfirm(coordinatorLayout," 该地址已添加至收藏夹");
+                    }else{
+                        SnackbarUtil.showLongWarning(coordinatorLayout," 额，很抱歉，改地址不可用...");
+                    }
                 }
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -207,7 +256,7 @@ public class TemporaryFind extends AppCompatActivity{
 
                 if(TextUtils.equals("ok",status)){
 
-                    temporary_find_scroll.setVisibility(View.VISIBLE);
+                    temporary_find_ll.setVisibility(View.VISIBLE);
 
                     String  basic= MyJson.getString(jsonObject,"basic");
                     cityId= MyJson.getString(basic,"id");
@@ -240,8 +289,10 @@ public class TemporaryFind extends AppCompatActivity{
                     placeCan=true;
 
                     menuItemSearch.setChecked(false);
-
+                    menuItemSearch.collapseActionView();
+                    searchView.onActionViewCollapsed();
                     SnackbarUtil.showShortInfo(coordinatorLayout," 天气数据已更新 ~O(∩_∩)O~");
+                    temporary_find_recycler.setVisibility(View.GONE);
                 }else if(TextUtils.equals("unknown city",status)){
                         if(place2){
                             placeCan=false;
@@ -261,12 +312,12 @@ public class TemporaryFind extends AppCompatActivity{
 
                         }
                 }else{
-                    temporary_find_scroll.setVisibility(View.VISIBLE);
+                    temporary_find_ll.setVisibility(View.VISIBLE);
                     errorView.LodError();
                 }
 
             }else {
-                temporary_find_scroll.setVisibility(View.VISIBLE);
+                temporary_find_ll.setVisibility(View.VISIBLE);
                 errorView.ShowError();
             }
 
@@ -314,6 +365,23 @@ public class TemporaryFind extends AppCompatActivity{
             }
 
         }
+    }
+
+
+    public void onBackPressed() {
+        if(TextUtils.equals(from,"SelectCity")&&collection){
+            Intent intent=new Intent();
+            intent.putExtra("collection_place",place);
+            setResult(RESULT_OK,intent);
+        }
+            finish();
+    }
+
+    public void getWeather(String where){
+        place=where;
+        mSwipeLayout.setRefreshing(true);
+        new GetWeatherData().execute(Urls.WEATHER_URL);
+        temporary_find_recycler.setVisibility(View.GONE);
     }
 
 

@@ -244,13 +244,11 @@ public class OneCityActivity extends AppCompatActivity {
                         }else if(weatherNow.getCond().getTxt().contains("雨")){
                             headImageView.setImageResource(R.mipmap.yu);
                         }
-//                        setHead();
 
                         String daily_forecast =MyJson.getString(jsonObject,"daily_forecast");
                         LogUtil.e(daily_forecast);
                         List<DailyForecast> dailyForecast= gson.fromJson(daily_forecast, new TypeToken<List<DailyForecast>>() {}.getType());
                         dailyCard.setData(dailyForecast);
-
 
                         SnackbarUtil.showShortInfo(coordinatorLayout," 天气数据已更新 ~O(∩_∩)O~");
                     }else if(TextUtils.equals("unknown city",status)){

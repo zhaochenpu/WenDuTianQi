@@ -4,10 +4,12 @@ package com.wendu.wendutianqi.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,6 +26,7 @@ import com.wendu.wendutianqi.net.Location;
 import com.wendu.wendutianqi.net.Urls;
 import com.wendu.wendutianqi.utils.CitySPUtils;
 import com.wendu.wendutianqi.utils.LogUtil;
+import com.wendu.wendutianqi.utils.SnackbarUtil;
 import com.wendu.wendutianqi.utils.SystemBarUtil;
 import com.wendu.wendutianqi.view.FindCityDialog;
 
@@ -48,7 +51,8 @@ public class SelectCity extends AppCompatActivity {
     private  String place;
     private TextView select_city_location_name;
     private LinearLayout select_city_location_ll;
-    private FindCityDialog findCityDialog;
+    private Snackbar Snackbar_remove;
+//    private FindCityDialog findCityDialog;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +61,39 @@ public class SelectCity extends AppCompatActivity {
         SystemBarUtil.setStatusBarColor(SelectCity.this,getResources().getColor(R.color.colorPrimary));
 
         initView();
+        initData();
 
+    }
+
+    public void initView(){
+        select_city_coordinatorLayou=(CoordinatorLayout) findViewById(R.id.select_city_coordinatorLayou);
+
+        toolbar = (Toolbar) findViewById(R.id.select_toolbar);
+        toolbar.setTitle("选择城市");
+        toolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finishActivity();
+            }
+        });
+
+        select_city_location_ll=(LinearLayout) findViewById(R.id.select_city_location_ll);
+        select_city_location_name=(TextView) findViewById(R.id.select_city_location_name);
+        select_city_location_ll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent();
+                intent.putExtra("select_place","location");
+                setResult(RESULT_OK,intent);
+                finishActivity();
+            }
+        });
+
+    }
+
+    public void initData(){
         mLocationClient = new LocationClient(SelectCity.this);     //声明LocationClient类
         mLocationClient.registerLocationListener(myListener);
         Location.initLocation(mLocationClient);
@@ -73,52 +109,6 @@ public class SelectCity extends AppCompatActivity {
             recyclerView.setLayoutManager(new LinearLayoutManager(SelectCity.this));
             recyclerView.setAdapter(mAdapter = new Selectdapter());
         }
-
-    }
-
-    public void initView(){
-        select_city_coordinatorLayou=(CoordinatorLayout) findViewById(R.id.select_city_coordinatorLayou);
-        toolbar = (Toolbar) findViewById(R.id.select_toolbar);
-        toolbar.setTitle("选择城市");
-        toolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white);
-        setSupportActionBar(toolbar);
-//        getActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-        select_city_location_ll=(LinearLayout) findViewById(R.id.select_city_location_ll);
-        select_city_location_name=(TextView) findViewById(R.id.select_city_location_name);
-
-        select_city_location_ll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent();
-                intent.putExtra("select_place","location");
-                setResult(RESULT_OK,intent);
-                finish();
-            }
-        });
-
-        findCityDialog=new FindCityDialog(this,R.style.Dialog);
-        findCityDialog.setOnPositiveListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EditText editText=findCityDialog.getEditText();
-                place=editText.getText().toString();
-
-                findCityDialog.cancel();
-            }
-        });
-        findCityDialog.setOnNegativeListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                findCityDialog.cancel();
-            }
-        });
-
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -131,12 +121,32 @@ public class SelectCity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id) {
             case R.id.add_city:
-                findCityDialog.show();
+//                findCityDialog.show();
+                Intent intent=new Intent(SelectCity.this,TemporaryFind.class);
+                intent.putExtra("where","SelectCity");
+                startActivityForResult(intent,200);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case 200:
+                if (resultCode == RESULT_OK) {
+                    String returnedData = data.getStringExtra("collection_place");
+                    LogUtil.e(returnedData+".......");
+                    if(!TextUtils.isEmpty(returnedData)){
+                        mAdapter.addItem(returnedData);
+                    }
+                }
+                break;
+            default:
+        }
+    }
+
 
     class Selectdapter extends RecyclerView.Adapter<Selectdapter.MyViewHolder>
     {
@@ -157,8 +167,21 @@ public class SelectCity extends AppCompatActivity {
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
+                    final String removePlace=citylist.get(position);
+                    CitySPUtils.remove(SelectCity.this,removePlace);
                     citylist.remove(position);
                     notifyItemRemoved(position);
+                    Snackbar_remove=SnackbarUtil.LongSnackbarWarning(select_city_coordinatorLayou,removePlace+"已移除收藏列表").setAction("撤销删除", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(!isFinishing()){
+                                CitySPUtils.put(SelectCity.this,removePlace,"1");
+                                citylist.add(position,removePlace);
+                                notifyItemInserted(position);
+                            }
+                        }
+                    });
+                    Snackbar_remove.show();
                     return false;
                 }
             });
@@ -188,6 +211,10 @@ public class SelectCity extends AppCompatActivity {
 
         }
 
+        public void addItem(String add){
+            citylist.add(add);
+            notifyItemInserted(citylist.size());
+        }
 
         class MyViewHolder extends RecyclerView.ViewHolder
         {
@@ -225,5 +252,13 @@ public class SelectCity extends AppCompatActivity {
             mLocationClient.stop();
         }
     }
+
+    public void finishActivity(){
+        if(Snackbar_remove.isShown()){
+            Snackbar_remove.dismiss();
+        }
+        finish();
+    }
+
 
 }
