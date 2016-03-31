@@ -64,16 +64,16 @@ public class HoursWeather {
         }
         switch (code){
             case 0:
-                ja="晴  ";
+                ja="晴 ";
                 break;
             case 1:
-                ja="多云 ";
+                ja="多云";
                 break;
             case 2:
-                ja="阴  ";
+                ja="阴 ";
                 break;
             case 3:
-                ja="阵雨 ";
+                ja="阵雨";
                 break;
             case 4:
                 ja="雷阵雨";
@@ -85,16 +85,16 @@ public class HoursWeather {
                 ja="雨夹雪";
                 break;
             case 7:
-                ja="小雨 ";
+                ja="小雨";
                 break;
             case 8:
-                ja="中雨 ";
+                ja="中雨";
                 break;
             case 9:
-                ja="大雨 ";
+                ja="大雨";
                 break;
             case 10:
-                ja="暴雨 ";
+                ja="暴雨";
                 break;
             case 11:
                 ja="大暴雨";
@@ -103,25 +103,25 @@ public class HoursWeather {
                 ja="特大暴雨";
                 break;
             case 13:
-                ja="阵雪 ";
+                ja="阵雪";
                 break;
             case 14:
-                ja="小雪 ";
+                ja="小雪";
                 break;
             case 15:
-                ja="中雪 ";
+                ja="中雪";
                 break;
             case 16:
-                ja="大雪 ";
+                ja="大雪";
                 break;
             case 17:
-                ja="暴雪 ";
+                ja="暴雪";
                 break;
             case 18:
-                ja="雾  ";
+                ja="雾 ";
                 break;
             case 19:
-                ja="冻雨 ";
+                ja="冻雨";
                 break;
             case 20:
                 ja="沙尘暴";
@@ -151,16 +151,16 @@ public class HoursWeather {
                 ja="大到暴雪";
                 break;
             case 29:
-                ja="浮尘 ";
+                ja="浮尘";
                 break;
             case 30:
-                ja="扬沙 ";
+                ja="扬沙";
                 break;
             case 31:
                 ja="强沙尘暴";
                 break;
             case 53:
-                ja="霾  ";
+                ja="霾 ";
                 break;
             default:
                 break;

@@ -41,7 +41,7 @@ public class FindCityAdapter extends RecyclerView.Adapter<FindCityAdapter.Simple
 
     public static final int LAST_POSITION = -1 ;
     private final Context mContext;
-    private List<AllChinaPlace> mData,queryData;
+    private List<AllChinaPlace> mData;
 
 //    public void add(AllChinaPlace s,int position) {
 //        position = position == LAST_POSITION ? getItemCount()  : position;
@@ -71,49 +71,38 @@ public class FindCityAdapter extends RecyclerView.Adapter<FindCityAdapter.Simple
         this.mOnItemClickLitener = mOnItemClickLitener;
     }
 
-    public void query(String queryText){
-        queryData.clear();
-        for(AllChinaPlace place:mData){
-            if(place.getCity().contains(queryText)){
-                queryData.add(place);
-            }
-        }
-        notifyDataSetChanged();
-    }
+
 
     public static class SimpleViewHolder extends RecyclerView.ViewHolder {
-        public final TextView place,prov;
+        public final TextView select_city_name;
 
         public SimpleViewHolder(View view) {
             super(view);
-            place = (TextView) view.findViewById(R.id.city_list_place);
-            prov = (TextView) view.findViewById(R.id.city_list_prov);
+            select_city_name = (TextView) view.findViewById(R.id.select_city_name);
         }
     }
 
     public FindCityAdapter(Context context, List<AllChinaPlace> data) {
         mContext = context;
-        queryData=new ArrayList<>();
         if (data != null)
             mData =data;
     }
 
     public SimpleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final View view = LayoutInflater.from(mContext).inflate(R.layout.city_list_item, parent, false);
+        final View view = LayoutInflater.from(mContext).inflate(R.layout.select_city_item, parent, false);
         return new SimpleViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final SimpleViewHolder holder, final int position) {
 
-        holder.place.setText(queryData.get(position).getCity());
-        holder.prov.setText(queryData.get(position).getProv());
+        holder.select_city_name.setText(mData.get(position).getCity()+"     "+mData.get(position).getProv());
         if (mOnItemClickLitener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int pos = holder.getLayoutPosition();
-                    mOnItemClickLitener.onItemClick(queryData.get(pos).getCity());
+                    mOnItemClickLitener.onItemClick(mData.get(pos).getCity());
                 }
             });
         }
@@ -121,7 +110,6 @@ public class FindCityAdapter extends RecyclerView.Adapter<FindCityAdapter.Simple
 
     @Override
     public int getItemCount() {
-        LogUtil.e(queryData.size()+"");
-        return queryData.size();
+        return mData.size();
     }
 }

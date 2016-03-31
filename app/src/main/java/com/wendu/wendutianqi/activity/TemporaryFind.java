@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -50,6 +51,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.litepal.crud.DataSupport;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -60,8 +62,9 @@ import java.util.List;
 public class TemporaryFind extends AppCompatActivity{
 
     private String place,cityId;
-    private boolean placeCan=false;
-    private boolean place2=false;
+    private boolean placeCan=false;//地址是否可用
+    private boolean place2=false;//第二次查询地址（去掉“市”）
+    private boolean collection;
     private SwipeRefreshLayout mSwipeLayout;
     private ErrorView errorView;
     private CoordinatorLayout coordinatorLayout;
@@ -69,13 +72,13 @@ public class TemporaryFind extends AppCompatActivity{
     private HoursCard hoursCard;
     private DailyCard dailyCard;
     private Toolbar toolbar;
-    private LinearLayout temporary_find_ll;
+    private ScrollView temporary_find_scroll;
     private SearchView searchView;
     private MenuItem menuItemSearch,menuItemCollection;
-    private String from;
-    private boolean collection;
+    private String from;//从哪来
     private RecyclerView temporary_find_recycler;
     private FindCityAdapter findCityAdapter;
+    private List<AllChinaPlace>  citylist,queryData=new ArrayList<>();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,6 +103,7 @@ public class TemporaryFind extends AppCompatActivity{
         mSwipeLayout = (SwipeRefreshLayout)findViewById(R.id.temporary_find_swipe);
         mSwipeLayout.setColorSchemeResources(R.color.colorPrimary,R.color.blue,R.color.light_colorPrimary);
         mSwipeLayout.setProgressViewOffset(false, 0,  (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
+        mSwipeLayout.setVisibility(View.GONE);
 
         toolbar = (Toolbar) findViewById(R.id.temporary_find_toolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white);
@@ -111,16 +115,36 @@ public class TemporaryFind extends AppCompatActivity{
 
         errorView=(ErrorView) findViewById(R.id.temporary_find_error);
 
-        temporary_find_ll=(LinearLayout) findViewById(R.id.temporary_find_ll);
-        temporary_find_ll.setVisibility(View.GONE);
+        temporary_find_scroll=(ScrollView) findViewById(R.id.temporary_find_scroll);
+        temporary_find_scroll.setVisibility(View.GONE);
 
 
         temporary_find_recycler=(RecyclerView) findViewById(R.id.temporary_find_recycler);
+        temporary_find_recycler .setLayoutManager(new LinearLayoutManager(TemporaryFind.this));
+        temporary_find_recycler.setAdapter(findCityAdapter=new FindCityAdapter(TemporaryFind.this,queryData));
 
+        initRecyclerview();
     }
 
     public void setListener(){
 
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setBack();
+            }
+        });
+
+        findCityAdapter.setOnItemClickLitener(new FindCityAdapter.OnItemClickLitener() {
+            @Override
+            public void onItemClick( String itemPlace) {
+                getWeather(itemPlace);
+            }
+        });
+        setSwipeLayoutRefreshListener();
+    }
+
+    public void setSwipeLayoutRefreshListener(){
         mSwipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -131,19 +155,6 @@ public class TemporaryFind extends AppCompatActivity{
                 }
             }
         });
-
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(TextUtils.equals(from,"SelectCity")&&collection){
-                    Intent intent=new Intent();
-                    intent.putExtra("collection_place",place);
-                    setResult(RESULT_OK,intent);
-                }
-                finish();
-            }
-        });
-
     }
 
 
@@ -162,6 +173,7 @@ public class TemporaryFind extends AppCompatActivity{
                 searchView.setQueryHint("请输入城市名称");
                 searchView.setSubmitButtonEnabled(true);
                 searchView.setIconifiedByDefault(true);
+
                 searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
                     public boolean onQueryTextSubmit(String query) {
@@ -171,21 +183,17 @@ public class TemporaryFind extends AppCompatActivity{
 
                     @Override
                     public boolean onQueryTextChange(String newText) {
-                        if(findCityAdapter==null){
-                            List<AllChinaPlace>  citylist= DataSupport.findAll(AllChinaPlace.class);
-                            temporary_find_recycler .setLayoutManager(new LinearLayoutManager(TemporaryFind.this));
-                            temporary_find_recycler.setAdapter(findCityAdapter=new FindCityAdapter(TemporaryFind.this,citylist));
-                            findCityAdapter.setOnItemClickLitener(new FindCityAdapter.OnItemClickLitener() {
-                                @Override
-                                public void onItemClick( String itemPlace) {
-                                    getWeather(itemPlace);
-                                }
-                            });
-                        }
-                        if(temporary_find_recycler.getVisibility()==View.GONE){
+                        if(temporary_find_recycler!=null&&temporary_find_recycler.getVisibility()==View.GONE){
                             temporary_find_recycler.setVisibility(View.VISIBLE);
                         }
-                        findCityAdapter.query(newText);
+                        if(mSwipeLayout.getVisibility()==View.VISIBLE){
+                            mSwipeLayout.setVisibility(View.GONE);
+                            temporary_find_scroll.setVisibility(View.GONE);
+                        }
+
+                        if(citylist!=null){
+                            query(newText);
+                        }
                         return false;
                     }
                 });
@@ -216,11 +224,21 @@ public class TemporaryFind extends AppCompatActivity{
                         SnackbarUtil.showLongWarning(coordinatorLayout," 额，很抱歉，改地址不可用...");
                     }
                 }
-
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void initRecyclerview(){
+
+        new Thread(new Runnable(){
+            @Override
+            public void run() {
+               citylist= DataSupport.findAll(AllChinaPlace.class);
+            }
+        }).start();
+
     }
 
 
@@ -256,7 +274,7 @@ public class TemporaryFind extends AppCompatActivity{
 
                 if(TextUtils.equals("ok",status)){
 
-                    temporary_find_ll.setVisibility(View.VISIBLE);
+
 
                     String  basic= MyJson.getString(jsonObject,"basic");
                     cityId= MyJson.getString(basic,"id");
@@ -292,11 +310,16 @@ public class TemporaryFind extends AppCompatActivity{
                     menuItemSearch.collapseActionView();
                     searchView.onActionViewCollapsed();
                     SnackbarUtil.showShortInfo(coordinatorLayout," 天气数据已更新 ~O(∩_∩)O~");
-                    temporary_find_recycler.setVisibility(View.GONE);
+                    if(temporary_find_recycler!=null){
+                        temporary_find_recycler.setVisibility(View.GONE);
+                    }
+                    mSwipeLayout.setVisibility(View.VISIBLE);
+                    temporary_find_scroll.setVisibility(View.VISIBLE);
                 }else if(TextUtils.equals("unknown city",status)){
                         if(place2){
                             placeCan=false;
                         SnackbarUtil.showLongWarning(coordinatorLayout," 额，很抱歉，没有该地区信息...");
+                            mSwipeLayout.setVisibility(View.GONE);
                         }else{
                             place2=true;
 
@@ -308,16 +331,22 @@ public class TemporaryFind extends AppCompatActivity{
                             }else{
                                 placeCan=false;
                                 SnackbarUtil.showLongWarning(coordinatorLayout," 额，很抱歉，没有该地区信息...");
+                                mSwipeLayout.setVisibility(View.GONE);
                             }
 
                         }
                 }else{
-                    temporary_find_ll.setVisibility(View.VISIBLE);
+                    temporary_find_scroll.setVisibility(View.VISIBLE);
+//                    mSwipeLayout.setOnRefreshListener(null);
+                    mSwipeLayout.setVisibility(View.VISIBLE);
+
                     errorView.LodError();
                 }
 
             }else {
-                temporary_find_ll.setVisibility(View.VISIBLE);
+                temporary_find_scroll.setVisibility(View.VISIBLE);
+//                mSwipeLayout.setOnRefreshListener(null);
+                mSwipeLayout.setVisibility(View.VISIBLE);
                 errorView.ShowError();
             }
 
@@ -359,7 +388,6 @@ public class TemporaryFind extends AppCompatActivity{
                     hoursCard.setVisibility(View.GONE);
                 }
 
-
             }else {
 
             }
@@ -369,20 +397,41 @@ public class TemporaryFind extends AppCompatActivity{
 
 
     public void onBackPressed() {
+        setBack();
+    }
+
+    public void setBack(){
+        if(menuItemSearch.isActionViewExpanded()&&placeCan){
+            searchView.onActionViewCollapsed();
+            temporary_find_recycler.setVisibility(View.GONE);
+            mSwipeLayout.setVisibility(View.VISIBLE);
+            temporary_find_scroll.setVisibility(View.VISIBLE);
+        }
         if(TextUtils.equals(from,"SelectCity")&&collection){
             Intent intent=new Intent();
-            intent.putExtra("collection_place",place);
             setResult(RESULT_OK,intent);
         }
-            finish();
+
+        finish();
     }
+
 
     public void getWeather(String where){
         place=where;
+        mSwipeLayout.setVisibility(View.VISIBLE);
         mSwipeLayout.setRefreshing(true);
         new GetWeatherData().execute(Urls.WEATHER_URL);
-        temporary_find_recycler.setVisibility(View.GONE);
+//        temporary_find_recycler.setVisibility(View.GONE);
     }
 
+    public void query(String queryText){
+        queryData.clear();
+        for(AllChinaPlace place:citylist){
+            if(place.getCity().contains(queryText)){
+                queryData.add(place);
+            }
+        }
+        findCityAdapter.notifyDataSetChanged();
+    }
 
 }

@@ -131,7 +131,7 @@ public class OneCityActivity extends AppCompatActivity {
 
         headImageView=(ImageView) findViewById(R.id.one_city_iv);
 
-        setHead();
+//        setHead();
 //        one_city_scroll=(NestedScrollView) findViewById(R.id.one_city_scroll);
         nowCard=(NowCard) findViewById(R.id.one_city_nowcard);
         hoursCard=(HoursCard) findViewById(R.id.one_city_hourscard);
@@ -233,16 +233,23 @@ public class OneCityActivity extends AppCompatActivity {
                         WeatherNow weatherNow= gson.fromJson(now, WeatherNow.class);
                         nowCard.setData(weatherNow,aqi1);
 //                        calendar.get(Calendar.HOUR_OF_DAY);
+                        Bitmap bitmap=null;
                         if(weatherNow.getCond().getTxt().contains("晴")){
                             headImageView.setImageResource(R.mipmap.flower);
+                            bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.flower);
                         }else if(weatherNow.getCond().getTxt().contains("云")){
                             headImageView.setImageResource(R.mipmap.duoyun_day);
+                            bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.duoyun_day);
                         }else if(weatherNow.getCond().getTxt().contains("阴")){
                             headImageView.setImageResource(R.mipmap.yin_youth);
+                            bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.yin_youth);
                         }else if(weatherNow.getCond().getTxt().contains("雾")||weatherNow.getCond().getTxt().contains("霾")){
                             headImageView.setImageResource(R.mipmap.wu);
                         }else if(weatherNow.getCond().getTxt().contains("雨")){
                             headImageView.setImageResource(R.mipmap.yu);
+                        }
+                        if(bitmap!=null){
+                            setHead(bitmap);
                         }
 
                         String daily_forecast =MyJson.getString(jsonObject,"daily_forecast");
@@ -316,14 +323,7 @@ public class OneCityActivity extends AppCompatActivity {
     /**
      * 获取图片主颜色 设置状态栏和工具栏
      */
-    public void setHead () {
-
-        Bitmap bitmap;
-        headImageView.setDrawingCacheEnabled(true);
-        bitmap =headImageView.getDrawingCache();
-        if(bitmap==null){
-            bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.flower);
-        }
+    public void setHead (Bitmap bitmap) {
 
         Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
             @Override
@@ -346,7 +346,7 @@ public class OneCityActivity extends AppCompatActivity {
 //                }
             }
         });
-        headImageView.setDrawingCacheEnabled(false);
+//        headImageView.setDrawingCacheEnabled(false);
     }
 
     class MyLocationListener implements BDLocationListener {

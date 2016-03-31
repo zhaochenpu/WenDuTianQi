@@ -16,32 +16,33 @@
                 android:titleTextColor="@color/white"
                 android:background="@color/colorPrimary"
         />
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/temporary_find_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:visibility="gone"
-        />
-    <LinearLayout
-        android:id="@+id/temporary_find_ll"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:layout_marginTop="?attr/actionBarSize">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/temporary_find_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:background="@color/grey_light"
+            />
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/temporary_find_swipe"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+
             >
-            <android.support.v4.widget.NestedScrollView
+            <ScrollView
                 android:id="@+id/temporary_find_scroll"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 >
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"  >
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -90,8 +91,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"/>
                 </RelativeLayout>
-            </android.support.v4.widget.NestedScrollView>
+            </ScrollView>
         </android.support.v4.widget.SwipeRefreshLayout>
-    </LinearLayout>
+    </RelativeLayout>
+
 
     </android.support.design.widget.CoordinatorLayout>

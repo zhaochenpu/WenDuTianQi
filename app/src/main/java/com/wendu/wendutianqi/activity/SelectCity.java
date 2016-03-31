@@ -136,11 +136,11 @@ public class SelectCity extends AppCompatActivity {
         switch (requestCode) {
             case 200:
                 if (resultCode == RESULT_OK) {
-                    String returnedData = data.getStringExtra("collection_place");
-                    LogUtil.e(returnedData+".......");
-                    if(!TextUtils.isEmpty(returnedData)){
-                        mAdapter.addItem(returnedData);
+                    citylist.clear();
+                    for (Object entry : citymap.keySet()){
+                        citylist.add((String)entry);
                     }
+                    mAdapter.notifyDataSetChanged();
                 }
                 break;
             default:
