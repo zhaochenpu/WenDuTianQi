@@ -52,6 +52,10 @@ public class DailyCard extends CardView{
     }
 
     public void setData(List<DailyForecast> dailyForecast){
+        if(this.getVisibility()==GONE){
+            this.setVisibility(VISIBLE);
+        }
+
         this.dailyForecast=dailyForecast;
 
         daily_card_recyclerview.setLayoutManager(new LinearLayoutManager(getContext()));

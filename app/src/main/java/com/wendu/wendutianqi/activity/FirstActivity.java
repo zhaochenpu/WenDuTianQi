@@ -41,24 +41,27 @@ public class FirstActivity extends Activity {
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.first_layout);
 		SystemBarUtil.transparencyBar(FirstActivity.this);
+		City2=(String) SPUtils.get(this,"City2","");
+		secretTextView1 = (SecretTextView)findViewById(R.id.textview1);
+
 		first=(boolean) SPUtils.get(this,"first",true);
 		if(first){
 			new GetAllCity().execute(Urls.ALL_CHINA_CITY);
 			SPUtils.put(this,"first",false);
 		}
 //		LogUtil.e("................"+first);
-		City2=(String) SPUtils.get(this,"City2","");
-        secretTextView1 = (SecretTextView)findViewById(R.id.textview1);
+
 
 		secretTextView1.show();    // fade in
        secretTextView1.setDuration(2000);
         secretTextView1.setIsVisible(true);
 
-    	new Handler().postDelayed(new Runnable(){   
+    	new Handler().postDelayed(new Runnable(){
 
-    	    public void run() {   
+    	    public void run() {
     	    	secretTextView1.toggle();
     	    	 secretTextView1.setDuration(2000);
+				LogUtil.e("secretTextView1...."+first);
 				secretTextView1.SecretTextVieweAnimatorlintener(new SecretTextView.SecretTextVieweAnimator(){
 					public void OnTAL(){
 						Intent intent=null;
@@ -69,6 +72,7 @@ public class FirstActivity extends Activity {
 //							intent=new Intent(FirstActivity.this,OneCityActivity.class);
 //							intent.putExtra("City1",citys.get(0).city1);
 //						}
+
 						if(!first){
 							startActivity(intent);
 							finish();
@@ -78,7 +82,7 @@ public class FirstActivity extends Activity {
 
 					}
 				});
-    	    }   
+    	    }
 
     	 }, 1800);
 	}
@@ -105,6 +109,7 @@ public class FirstActivity extends Activity {
 //					allChinaPlace.setProv(citylist.get(i).getProv());
 //
 //				}
+				LogUtil.e("GetAllCity...."+first);
 				if(!first){
 					Intent intent=new Intent(FirstActivity.this,OneCityActivity.class);
 					startActivity(intent);

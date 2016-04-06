@@ -68,6 +68,10 @@ public class HoursCard extends CardView{
 
 
     public void setData(List<HoursWeather> hoursWeathers){
+        if(this.getVisibility()==GONE){
+            this.setVisibility(VISIBLE);
+        }
+
         hoursWeathersall=hoursWeathers;
 
         today=false;

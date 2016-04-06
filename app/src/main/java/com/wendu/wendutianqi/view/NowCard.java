@@ -1,11 +1,14 @@
 package com.wendu.wendutianqi.view;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewAnimationUtils;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -53,19 +56,13 @@ public class NowCard extends CardView{
         now_card_aqi_text=(TextView) view.findViewById(R.id.now_card_aqi_text);
         now_card_more=(TextView) view.findViewById(R.id.now_card_more);
 
-        now_card_more.setTextColor(Color.parseColor("#D9FFFFFF"));
-        now_card_date.setTextColor(Color.WHITE);
-        now_card_weather.setTextColor(Color.WHITE);
-        now_card_aqi_text.setTextColor(Color.parseColor(color));
-        now_card_aqi.setTextColor(Color.parseColor(color));
-        now_card_qlty.setTextColor(Color.parseColor(color));
-        now_card_tigan.setTextColor(Color.parseColor(color));
-        now_card_wind.setTextColor(Color.parseColor(color));
-        now_card_du.setTextColor(Color.WHITE);
-
     }
 
     public void setData(WeatherNow weatherNow, AQI aqi){
+
+        if(this.getVisibility()==GONE){
+            this.setVisibility(VISIBLE);
+        }
 
         if(aqi==null){
             now_card_aqiL.setVisibility(GONE);

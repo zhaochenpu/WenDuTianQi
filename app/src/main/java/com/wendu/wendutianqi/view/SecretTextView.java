@@ -53,7 +53,10 @@ public  SecretTextVieweAnimator sta;
 
             @Override
             public void onAnimationEnd(Animator animator) {
-                sta.OnTAL();
+                if(sta!=null){
+                    sta.OnTAL();
+                }
+
             }
 
             @Override

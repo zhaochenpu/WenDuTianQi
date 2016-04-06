@@ -1,5 +1,6 @@
 package com.wendu.wendutianqi.activity;
 
+import android.animation.Animator;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,9 +17,13 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.TypedValue;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewAnimationUtils;
+import android.view.ViewTreeObserver;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -274,7 +279,14 @@ public class TemporaryFind extends AppCompatActivity{
 
                 if(TextUtils.equals("ok",status)){
 
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                        Animator animator = ViewAnimationUtils.createCircularReveal(coordinatorLayout,(coordinatorLayout.getWidth()/2),(coordinatorLayout.getHeight()/2)
+                                ,0,coordinatorLayout.getWidth());
 
+                        animator.setInterpolator(new AccelerateInterpolator());
+                        animator.setDuration(300);
+                        animator.start();
+                    }
 
                     String  basic= MyJson.getString(jsonObject,"basic");
                     cityId= MyJson.getString(basic,"id");
@@ -396,11 +408,21 @@ public class TemporaryFind extends AppCompatActivity{
     }
 
 
-    public void onBackPressed() {
-        setBack();
+//    public void onBackPressed() {
+//        setBack();
+//        return;
+//    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            setBack();
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     public void setBack(){
+        LogUtil.e(".........."+placeCan);
         if(menuItemSearch.isActionViewExpanded()&&placeCan){
             searchView.onActionViewCollapsed();
             temporary_find_recycler.setVisibility(View.GONE);
@@ -413,6 +435,7 @@ public class TemporaryFind extends AppCompatActivity{
         }
 
         finish();
+
     }
 
 
