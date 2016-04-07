@@ -34,7 +34,7 @@ public class DailyCard extends CardView{
     private Hourdapter mAdapter;
     private boolean today,tomorrow,houtian;
     private String  day;
-    private Calendar calendar;
+//    private Calendar calendar;
     private SimpleDateFormat sdf;
 
     public DailyCard(Context context, AttributeSet attrs) {
@@ -47,7 +47,7 @@ public class DailyCard extends CardView{
 
     public void initView(){
         daily_card_recyclerview=(RecyclerView) view.findViewById(R.id.daily_card_recyclerview);
-        calendar = Calendar.getInstance();
+//        calendar = Calendar.getInstance();
         sdf=new SimpleDateFormat("yyyy-MM-dd");
     }
 

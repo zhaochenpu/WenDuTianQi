@@ -1,8 +1,10 @@
 package com.wendu.wendutianqi.activity;
 
 import android.animation.Animator;
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 
@@ -104,7 +106,22 @@ public class TemporaryFind extends AppCompatActivity{
     private void initView(){
 
         coordinatorLayout=(CoordinatorLayout) findViewById(R.id.temporary_find_CoordinatorLayout);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            coordinatorLayout.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+                @Override
+                public boolean onPreDraw() {
+                    coordinatorLayout.getViewTreeObserver().removeOnPreDrawListener(this);
+                    Animator animator = ViewAnimationUtils.createCircularReveal(coordinatorLayout,(coordinatorLayout.getWidth()/2),(coordinatorLayout.getHeight()/2)
+                            ,0,coordinatorLayout.getWidth());
 
+                    animator.setInterpolator(new AccelerateInterpolator());
+                    animator.setDuration(500);
+                    animator.start();
+                    return true;
+                }
+            });
+        }
         mSwipeLayout = (SwipeRefreshLayout)findViewById(R.id.temporary_find_swipe);
         mSwipeLayout.setColorSchemeResources(R.color.colorPrimary,R.color.blue,R.color.light_colorPrimary);
         mSwipeLayout.setProgressViewOffset(false, 0,  (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));

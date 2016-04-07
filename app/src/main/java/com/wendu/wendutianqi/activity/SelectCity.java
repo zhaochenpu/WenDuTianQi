@@ -1,7 +1,10 @@
 package com.wendu.wendutianqi.activity;
 
 
+import android.animation.Animator;
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -14,7 +17,10 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -67,6 +73,21 @@ public class SelectCity extends AppCompatActivity {
 
     public void initView(){
         select_city_coordinatorLayou=(CoordinatorLayout) findViewById(R.id.select_city_coordinatorLayou);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            select_city_coordinatorLayou.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+                @Override
+                public boolean onPreDraw() {
+                    select_city_coordinatorLayou.getViewTreeObserver().removeOnPreDrawListener(this);
+                    Animator animator = ViewAnimationUtils.createCircularReveal(select_city_coordinatorLayou,(select_city_coordinatorLayou.getWidth()/2),(select_city_coordinatorLayou.getHeight()/2)
+                            ,0,select_city_coordinatorLayou.getWidth());
+                    animator.setInterpolator(new AccelerateInterpolator());
+                    animator.setDuration(500);
+                    animator.start();
+                    return true;
+                }
+            });
+        }
 
         toolbar = (Toolbar) findViewById(R.id.select_toolbar);
         toolbar.setTitle("选择城市");
@@ -254,7 +275,7 @@ public class SelectCity extends AppCompatActivity {
     }
 
     public void finishActivity(){
-        if(Snackbar_remove.isShown()){
+        if(Snackbar_remove!=null&&Snackbar_remove.isShown()){
             Snackbar_remove.dismiss();
         }
         finish();

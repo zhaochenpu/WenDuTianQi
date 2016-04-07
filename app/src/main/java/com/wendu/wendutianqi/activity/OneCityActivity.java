@@ -2,11 +2,13 @@ package com.wendu.wendutianqi.activity;
 
 
 
+import android.animation.Animator;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.FragmentManager;
@@ -19,6 +21,8 @@ import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewAnimationUtils;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageView;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -28,6 +32,7 @@ import com.google.gson.reflect.TypeToken;
 import com.wendu.wendutianqi.R;
 import com.wendu.wendutianqi.fragment.MyMenuFragment;
 import com.wendu.wendutianqi.model.AQI;
+import com.wendu.wendutianqi.model.AllChinaPlace;
 import com.wendu.wendutianqi.model.DailyForecast;
 import com.wendu.wendutianqi.model.HoursWeather;
 import com.wendu.wendutianqi.model.WeatherNow;
@@ -36,6 +41,7 @@ import com.wendu.wendutianqi.net.MyJson;
 import com.wendu.wendutianqi.net.MyOkhttp;
 import com.wendu.wendutianqi.net.Urls;
 import com.wendu.wendutianqi.utils.LogUtil;
+import com.wendu.wendutianqi.utils.SPUtils;
 import com.wendu.wendutianqi.utils.SnackbarUtil;
 import com.wendu.wendutianqi.utils.SystemBarUtil;
 import com.wendu.wendutianqi.view.DailyCard;
@@ -49,7 +55,9 @@ import com.wendu.wendutianqi.view.flowingdrawer.LeftDrawerLayout;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.litepal.crud.DataSupport;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -62,7 +70,7 @@ public class OneCityActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private ActionBar ab;
     private LeftDrawerLayout mLeftDrawerLayout;
-    private SystemBarTintManager tintManager;
+//    private SystemBarTintManager tintManager;
     private SwipeRefreshLayout mSwipeLayout;
     private LocationClient mLocationClient = null;
     private BDLocationListener myListener = new MyLocationListener();
@@ -77,6 +85,7 @@ public class OneCityActivity extends AppCompatActivity {
     private boolean location=true;
     private   MyMenuFragment mMenuFragment;
     private Calendar calendar;
+    private String todayweather;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,8 +98,6 @@ public class OneCityActivity extends AppCompatActivity {
 
         initView();
 
-
-
         setListener();
     }
 
@@ -99,10 +106,8 @@ public class OneCityActivity extends AppCompatActivity {
 
         coordinatorLayout=(CoordinatorLayout) findViewById(R.id.one_city_CoordinatorLayout);
 
-        tintManager = new SystemBarTintManager(this);
-
         mSwipeLayout = (SwipeRefreshLayout)findViewById(R.id.one_city_swipe);
-        mSwipeLayout.setColorSchemeResources(R.color.colorPrimary,R.color.blue,R.color.light_colorPrimary);
+        mSwipeLayout.setColorSchemeResources(R.color.colorPrimary,R.color.blue,R.color.cyan);
         mSwipeLayout.setProgressViewOffset(false, 0,  (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
         mSwipeLayout.setRefreshing(true);
 
@@ -166,16 +171,28 @@ public class OneCityActivity extends AppCompatActivity {
             @Override
             public void MenuItemSelectedListener(MenuItem item) {
                 mLeftDrawerLayout.toggle();
+                Intent intent =null;
                 switch (item.getItemId()){
                     case R.id.menu_citylist:
-                        Intent intent =new Intent(OneCityActivity.this,SelectCity.class);
-                        startActivityForResult(intent,100);
+                                intent =new Intent(OneCityActivity.this,SelectCity.class);
+
                         break;
                     case R.id.menu_search:
-                        Intent intent2 =new Intent(OneCityActivity.this,TemporaryFind.class);
-                        startActivity(intent2);
+                        intent=new Intent(OneCityActivity.this,TemporaryFind.class);
+                        break;
+                    case R.id.menu_about:
+                             intent =new Intent(OneCityActivity.this,About.class);
                         break;
                 }
+                if(intent!=null){
+                    final Intent finalIntent = intent;
+                    new Handler().postDelayed(new Runnable(){
+                        public void run() {
+                            startActivity(finalIntent);
+                        }
+                    },200);
+                }
+
             }
         });
 
@@ -212,6 +229,14 @@ public class OneCityActivity extends AppCompatActivity {
                 }
 
                     if(TextUtils.equals("ok",status)){
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                            Animator animator = ViewAnimationUtils.createCircularReveal(coordinatorLayout,(coordinatorLayout.getWidth()/2),(coordinatorLayout.getHeight()/2)
+                                    ,0,coordinatorLayout.getWidth());
+
+                            animator.setInterpolator(new AccelerateInterpolator());
+                            animator.setDuration(300);
+                            animator.start();
+                        }
 
                         String  basic= MyJson.getString(jsonObject,"basic");
                         cityId= MyJson.getString(basic,"id");
@@ -234,6 +259,7 @@ public class OneCityActivity extends AppCompatActivity {
                         nowCard.setData(weatherNow,aqi1);
 //                        calendar.get(Calendar.HOUR_OF_DAY);
                         Bitmap bitmap=null;
+                        todayweather=weatherNow.getCond().getTxt();
                         if(weatherNow.getCond().getTxt().contains("晴")){
                             headImageView.setImageResource(R.mipmap.flower);
                             bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.flower);
@@ -245,8 +271,10 @@ public class OneCityActivity extends AppCompatActivity {
                             bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.yin_youth);
                         }else if(weatherNow.getCond().getTxt().contains("雾")||weatherNow.getCond().getTxt().contains("霾")){
                             headImageView.setImageResource(R.mipmap.wu);
+                            bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.wu);
                         }else if(weatherNow.getCond().getTxt().contains("雨")){
                             headImageView.setImageResource(R.mipmap.yu);
+                            bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.yu);
                         }
                         if(bitmap!=null){
                             setHead(bitmap);
@@ -330,7 +358,7 @@ public class OneCityActivity extends AppCompatActivity {
             public void onGenerated(Palette palette) {
 
                 bgColor=palette.getDarkVibrantColor(getResources().getColor(R.color.white));
-                titleColor=palette.getLightMutedColor(getResources().getColor(R.color.white));
+                titleColor=palette.getLightVibrantColor(getResources().getColor(R.color.white));
                 collapsingToolbar.setContentScrimColor(bgColor);
                 collapsingToolbar.setExpandedTitleColor(titleColor);
                 SystemBarUtil.setStatusBarColor(OneCityActivity.this,bgColor);
@@ -384,11 +412,14 @@ public class OneCityActivity extends AppCompatActivity {
     }
 
 
-
     public void onBackPressed() {
         if (mLeftDrawerLayout.isShownMenu()) {
             mLeftDrawerLayout.closeDrawer();
         } else {
+            if(!TextUtils.isEmpty(todayweather)){
+                SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+                SPUtils.put(OneCityActivity.this,"todayweather",sdf+todayweather);
+            }
             super.onBackPressed();
         }
     }

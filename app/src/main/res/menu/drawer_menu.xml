@@ -12,18 +12,12 @@
             android:id="@+id/menu_set"
             android:icon="@mipmap/set"
             android:title="设置" />
-        <item
-            android:id="@+id/menu_help"
-            android:icon="@mipmap/help"
-            android:title="帮助" />
+
         <item
             android:id="@+id/menu_about"
             android:icon="@mipmap/kaifa"
             android:title="关于" />
-        <item
-            android:id="@+id/menu_feedback"
-            android:icon="@mipmap/message"
-            android:title="反馈" />
+
 
     </group>
 </menu>
