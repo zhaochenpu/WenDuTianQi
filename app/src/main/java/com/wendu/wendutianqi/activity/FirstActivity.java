@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.view.Window;
+import android.widget.RelativeLayout;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -22,6 +23,7 @@ import com.wendu.wendutianqi.utils.LogUtil;
 import com.wendu.wendutianqi.utils.SPUtils;
 import com.wendu.wendutianqi.utils.SystemBarUtil;
 import com.wendu.wendutianqi.view.SecretTextView;
+import com.wendu.wendutianqi.view.flowingdrawer.RevealLayout;
 
 import org.litepal.crud.DataSupport;
 
@@ -37,6 +39,7 @@ public class FirstActivity extends Activity {
 	private String City1,City2;
 	private boolean first=true;
 	private Calendar calendar;
+	private RelativeLayout first_rl;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,17 +48,27 @@ public class FirstActivity extends Activity {
 		setContentView(R.layout.first_layout);
 		SystemBarUtil.transparencyBar(FirstActivity.this);
 		City2=(String) SPUtils.get(this,"City2","");
+		first_rl=(RelativeLayout) findViewById(R.id.first_rl);
 		secretTextView1 = (SecretTextView)findViewById(R.id.textview1);
 
 		int random=(int)((Math.random())*3);
-		LogUtil.e(random+"....................");
+		calendar = Calendar.getInstance();
+		int  hour=calendar.get(Calendar.HOUR_OF_DAY);
+
+		if((hour>=0&&hour<=5)){
+			first_rl.setBackgroundResource(R.color.indigo_dark);
+		}else if(hour>=20&&hour<=23){
+			first_rl.setBackgroundResource(R.color.indigo);
+		}else if((hour>=18&&hour<=19)){
+			first_rl.setBackgroundResource(R.color.colorPrimaryDark);
+		}
+
 		if(random==1){
-			calendar = Calendar.getInstance();
-			int  hour=calendar.get(Calendar.HOUR_OF_DAY);
 			if(hour>5&&hour<9){
 				secretTextView1.setText("早安!");
 			}else if(hour>=0&&hour<5){
 				secretTextView1.setText("是什么，让你难以入眠？");
+
 			}else if(hour>=23){
 				secretTextView1.setText("嗨，晚睡的人儿哟");
 			}else if(hour>=9&&hour<12){
@@ -82,6 +95,7 @@ public class FirstActivity extends Activity {
 //					secretTextView1.setText("今天天气还不错吧");
 //				}else
 				if(todayWeather.contains("雨")){
+					first_rl.setBackgroundResource(R.color.cyan);
 					secretTextView1.setText("下雨天你会想起谁？");
 				}else if (todayWeather.contains("霾")){
 					secretTextView1.setText("忘记了从什么时候开始用颜色来描述空气");
@@ -112,7 +126,7 @@ public class FirstActivity extends Activity {
 
     	    public void run() {
     	    	secretTextView1.toggle();
-    	    	 secretTextView1.setDuration(1600);
+    	    	 secretTextView1.setDuration(1200);
 
 				secretTextView1.SecretTextVieweAnimatorlintener(new SecretTextView.SecretTextVieweAnimator(){
 					public void OnTAL(){
@@ -136,7 +150,7 @@ public class FirstActivity extends Activity {
 				});
     	    }
 
-    	 }, 1600);
+    	 }, 1800);
 	}
 
 	private class GetAllCity extends AsyncTask<String, Integer, String> {

@@ -3,107 +3,126 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
    >
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="6"
+            android:orientation="vertical"
             >
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 >
-                <LinearLayout
+                <TextView
+                    android:id="@+id/now_card_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    >
-                    <TextView
-                        android:id="@+id/now_card_date"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text=""
-
-                        android:textSize="24sp"/>
-                    <TextView
-                        android:id="@+id/now_card_weather"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10sp"
-                        android:text=""
-
-                        android:textSize="24sp"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/now_card_aqiL"
+                    android:text=""
+                    android:textSize="24sp"
+                    android:textColor="@color/white"/>
+                <TextView
+                    android:id="@+id/now_card_weather"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp">
-                    <TextView
-                        android:id="@+id/now_card_aqi_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="空气指数："
+                    android:layout_marginLeft="10sp"
+                    android:text=""
+                    android:textSize="24sp"
+                    android:textColor="@color/white"/>
+            </LinearLayout>
 
-                        android:textSize="12sp"/>
-                    <TextView
-                        android:id="@+id/now_card_aqi"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text=""
+            <LinearLayout
+                android:id="@+id/now_card_aqiL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
+                <TextView
+                    android:id="@+id/now_card_aqi_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="空气指数："
+                    android:textColor="@color/white90"
+                    android:textSize="12sp"/>
+                <TextView
+                    android:id="@+id/now_card_aqi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text=""
+                    android:textColor="@color/white90"
+                    android:textSize="12sp" />
+                <TextView
+                    android:id="@+id/now_card_qlty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="2sp"
+                    android:layout_marginLeft="5dp"
+                    android:text=""
+                    android:textColor="@color/white90"
+                    android:textSize="12sp" />
 
-                        android:textSize="12sp" />
-                    <TextView
-                        android:id="@+id/now_card_qlty"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="2sp"
-                        android:layout_marginLeft="5dp"
-                        android:text=""
-
-                        android:textSize="12sp" />
-
-                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
                 <TextView
                     android:id="@+id/now_card_tigan"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_weight="0.8"
                     android:text=""
-
+                    android:textColor="@color/white90"
                     android:textSize="12sp"/>
                 <TextView
                     android:id="@+id/now_card_wind"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_weight="1.2"
                     android:text=""
-
+                    android:textColor="@color/white90"
                     android:textSize="12sp"/>
             </LinearLayout>
-
-        </RelativeLayout>
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="4"
-            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
+                <TextView
+                    android:id="@+id/now_card_shidu"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.8"
+                    android:text=""
+                    android:textColor="@color/white90"
+                    android:textSize="12sp"/>
+                <TextView
+                    android:id="@+id/now_card_qiya"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.2"
+                    android:text=""
+                    android:textColor="@color/white90"
+                    android:textSize="12sp"/>
+            </LinearLayout>
             <TextView
-                android:id="@+id/now_card_more"
+                android:id="@+id/now_card_jiangshui_kejian"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="点击查看详情>>"
-                android:textSize="10sp"/>
-            <TextView
-                android:id="@+id/now_card_du"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="5dp"
                 android:text=""
-
-                android:textSize="50sp"/>
+                android:textColor="@color/white90"
+                android:textSize="12sp"/>
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/now_card_du"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+            android:gravity="center"
+            android:text=""
+            android:lines="1"
+            android:textSize="50sp"
+            android:textColor="@color/white"
+            android:padding="0.1sp"/>
+
 </LinearLayout>

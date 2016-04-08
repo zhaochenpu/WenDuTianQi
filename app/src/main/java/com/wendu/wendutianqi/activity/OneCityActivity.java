@@ -57,6 +57,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.litepal.crud.DataSupport;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -86,6 +87,7 @@ public class OneCityActivity extends AppCompatActivity {
     private   MyMenuFragment mMenuFragment;
     private Calendar calendar;
     private String todayweather;
+    private List<DailyForecast> dailyForecast;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -167,6 +169,19 @@ public class OneCityActivity extends AppCompatActivity {
             }
         });
 
+        dailyCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(OneCityActivity.this,DailyActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("dailyForecast", (Serializable) dailyForecast);
+                bundle.putString("place",place);
+                intent.putExtra("daily",bundle);
+                startActivity(intent);
+            }
+        });
+
         mMenuFragment.setMenuItemSelectedListener(new MyMenuFragment.MenuItemSelectedListener() {
             @Override
             public void MenuItemSelectedListener(MenuItem item) {
@@ -190,7 +205,7 @@ public class OneCityActivity extends AppCompatActivity {
                         public void run() {
                             startActivity(finalIntent);
                         }
-                    },200);
+                    },150);
                 }
 
             }
@@ -212,7 +227,6 @@ public class OneCityActivity extends AppCompatActivity {
 
             Gson gson=new Gson();
             if(!TextUtils.isEmpty(result)){
-                LogUtil.e(result);
 
                 JSONObject jsonObject = null;
                 String jsonData=null;
@@ -232,7 +246,6 @@ public class OneCityActivity extends AppCompatActivity {
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                             Animator animator = ViewAnimationUtils.createCircularReveal(coordinatorLayout,(coordinatorLayout.getWidth()/2),(coordinatorLayout.getHeight()/2)
                                     ,0,coordinatorLayout.getWidth());
-
                             animator.setInterpolator(new AccelerateInterpolator());
                             animator.setDuration(300);
                             animator.start();
@@ -241,7 +254,6 @@ public class OneCityActivity extends AppCompatActivity {
                         String  basic= MyJson.getString(jsonObject,"basic");
                         cityId= MyJson.getString(basic,"id");
                         if(!TextUtils.isEmpty(cityId)){
-
                             new  GetHoursWeatherData().execute(Urls.WEATHER_HOUR_URL+cityId.replace("CN", "")+".html");
                         }
 
@@ -281,8 +293,7 @@ public class OneCityActivity extends AppCompatActivity {
                         }
 
                         String daily_forecast =MyJson.getString(jsonObject,"daily_forecast");
-                        LogUtil.e(daily_forecast);
-                        List<DailyForecast> dailyForecast= gson.fromJson(daily_forecast, new TypeToken<List<DailyForecast>>() {}.getType());
+                        dailyForecast= gson.fromJson(daily_forecast, new TypeToken<List<DailyForecast>>() {}.getType());
                         dailyCard.setData(dailyForecast);
 
                         SnackbarUtil.showShortInfo(coordinatorLayout," 天气数据已更新 ~O(∩_∩)O~");

@@ -25,7 +25,7 @@ import java.util.Calendar;
 public class NowCard extends CardView{
 
     private View view;
-    private TextView now_card_date,now_card_weather,now_card_aqi,now_card_aqi_text,now_card_qlty,now_card_tigan,now_card_wind,now_card_du,now_card_more;
+    private TextView now_card_date,now_card_weather,now_card_aqi,now_card_aqi_text,now_card_qlty,now_card_tigan,now_card_wind,now_card_du,now_card_more,now_card_jiangshui_kejian,now_card_qiya,now_card_shidu;
     private LinearLayout now_card_aqiL;
     private String color="#E6FFFFFF";
 
@@ -54,8 +54,9 @@ public class NowCard extends CardView{
         now_card_du=(TextView) view.findViewById(R.id.now_card_du);
         now_card_aqiL=(LinearLayout) view.findViewById(R.id.now_card_aqiL);
         now_card_aqi_text=(TextView) view.findViewById(R.id.now_card_aqi_text);
-        now_card_more=(TextView) view.findViewById(R.id.now_card_more);
-
+        now_card_jiangshui_kejian=(TextView) view.findViewById(R.id.now_card_jiangshui_kejian);
+        now_card_qiya=(TextView) view.findViewById(R.id.now_card_qiya);
+        now_card_shidu=(TextView) view.findViewById(R.id.now_card_shidu);
     }
 
     public void setData(WeatherNow weatherNow, AQI aqi){
@@ -76,9 +77,20 @@ public class NowCard extends CardView{
 
         if(weatherNow!=null){
             now_card_weather.setText(weatherNow.getCond().getTxt());
-            now_card_tigan.setText("体感："+weatherNow.getFl()+"℃");
+
+            if(weatherNow.getCond().getTxt().contains("雨")){
+                now_card_jiangshui_kejian.setText("降水量:"+weatherNow.getPcpn()+"mm");
+            }else if(weatherNow.getCond().getTxt().contains("雾")||weatherNow.getCond().getTxt().contains("霾")){
+                now_card_jiangshui_kejian.setText("能见度:"+weatherNow.getPcpn()+"km");
+            }else{
+                now_card_jiangshui_kejian.setVisibility(GONE);
+            }
+
+            now_card_tigan.setText("体感:"+weatherNow.getFl()+"℃");
             now_card_wind.setText(weatherNow.getWind().getDir()+" "+weatherNow.getWind().getSc()+"级");
             now_card_du.setText(weatherNow.getTmp()+"℃");
+            now_card_qiya.setText("气压:"+weatherNow.getPres()+"百帕");
+            now_card_shidu.setText("湿度:"+weatherNow.getHum()+"%");
         }
 
     }

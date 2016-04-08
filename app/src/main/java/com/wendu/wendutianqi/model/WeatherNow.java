@@ -26,8 +26,18 @@ public class WeatherNow {
     private  String fl;//体感温度
     private  String hum;//湿度%
     private  String  pcpn;//降雨量mm
-    private  String tmp;//wendu
-    private  String vis;//vis
+    private  String tmp;//温度
+    private  String vis;//能见度（km）
+
+    public String getPres() {
+        return pres;
+    }
+
+    public void setPres(String pres) {
+        this.pres = pres;
+    }
+
+    private  String pres;//气压(百帕)
     private  Wind wind;
     private   Cond cond;
 

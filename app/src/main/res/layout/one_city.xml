@@ -91,6 +91,7 @@
                             android:clickable="true"
                             android:foreground="?android:attr/selectableItemBackground"
                             android:visibility="gone"
+                            app:cardBackgroundColor="@color/colorPrimary"
                             />
                         <com.wendu.wendutianqi.view.HoursCard
                             android:id="@+id/one_city_hourscard"
