@@ -104,7 +104,7 @@
                             app:cardPreventCornerOverlap="true"
                             app:cardUseCompatPadding="true"
                             android:visibility="gone"/>
-                        <com.wendu.wendutianqi.view.DailyCard
+                        <com.wendu.wendutianqi.view.DailyCardLine
                             android:id="@+id/one_city_dailycard"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

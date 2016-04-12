@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageView;
+
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -32,7 +33,6 @@ import com.google.gson.reflect.TypeToken;
 import com.wendu.wendutianqi.R;
 import com.wendu.wendutianqi.fragment.MyMenuFragment;
 import com.wendu.wendutianqi.model.AQI;
-import com.wendu.wendutianqi.model.AllChinaPlace;
 import com.wendu.wendutianqi.model.DailyForecast;
 import com.wendu.wendutianqi.model.HoursWeather;
 import com.wendu.wendutianqi.model.WeatherNow;
@@ -44,20 +44,17 @@ import com.wendu.wendutianqi.utils.LogUtil;
 import com.wendu.wendutianqi.utils.SPUtils;
 import com.wendu.wendutianqi.utils.SnackbarUtil;
 import com.wendu.wendutianqi.utils.SystemBarUtil;
-import com.wendu.wendutianqi.view.DailyCard;
+import com.wendu.wendutianqi.view.DailyCardLine;
 import com.wendu.wendutianqi.view.ErrorView;
 import com.wendu.wendutianqi.view.HoursCard;
 import com.wendu.wendutianqi.view.NowCard;
-import com.wendu.wendutianqi.view.SystemBarTintManager;
 import com.wendu.wendutianqi.view.flowingdrawer.FlowingView;
 import com.wendu.wendutianqi.view.flowingdrawer.LeftDrawerLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.litepal.crud.DataSupport;
 
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -82,7 +79,7 @@ public class OneCityActivity extends AppCompatActivity {
     private ImageView headImageView;
     private NowCard nowCard;
     private HoursCard hoursCard;
-    private DailyCard dailyCard;
+    private DailyCardLine dailyCard;
     private boolean location=true;
     private   MyMenuFragment mMenuFragment;
     private Calendar calendar;
@@ -142,7 +139,7 @@ public class OneCityActivity extends AppCompatActivity {
 //        one_city_scroll=(NestedScrollView) findViewById(R.id.one_city_scroll);
         nowCard=(NowCard) findViewById(R.id.one_city_nowcard);
         hoursCard=(HoursCard) findViewById(R.id.one_city_hourscard);
-        dailyCard=(DailyCard) findViewById(R.id.one_city_dailycard);
+        dailyCard=(DailyCardLine) findViewById(R.id.one_city_dailycard);
 
         errorView=(ErrorView) findViewById(R.id.one_city_error);
     }
@@ -168,19 +165,19 @@ public class OneCityActivity extends AppCompatActivity {
 
             }
         });
-
-        dailyCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(OneCityActivity.this,DailyActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("dailyForecast", (Serializable) dailyForecast);
-                bundle.putString("place",place);
-                intent.putExtra("daily",bundle);
-                startActivity(intent);
-            }
-        });
+//
+//        dailyCard.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                Intent intent = new Intent(OneCityActivity.this,DailyActivity.class);
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable("dailyForecast", (Serializable) dailyForecast);
+//                bundle.putString("place",place);
+//                intent.putExtra("daily",bundle);
+//                startActivity(intent);
+//            }
+//        });
 
         mMenuFragment.setMenuItemSelectedListener(new MyMenuFragment.MenuItemSelectedListener() {
             @Override

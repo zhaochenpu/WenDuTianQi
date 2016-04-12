@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        
+    </LinearLayout>
+    <com.wendu.wendutianqi.view.SmoothLineChartEquallySpaced
+        android:id="@+id/daily_card_max_line"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@android:color/white" />
+    <com.wendu.wendutianqi.view.SmoothLineChartEquallySpaced
+        android:id="@+id/daily_card_min_line"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@android:color/white" />
+</LinearLayout>

@@ -13,9 +13,7 @@ import android.widget.RelativeLayout;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.wendu.wendutianqi.R;
-import com.wendu.wendutianqi.model.AllChinaCity;
 import com.wendu.wendutianqi.model.AllChinaPlace;
-import com.wendu.wendutianqi.model.DailyForecast;
 import com.wendu.wendutianqi.net.MyJson;
 import com.wendu.wendutianqi.net.MyOkhttp;
 import com.wendu.wendutianqi.net.Urls;
@@ -23,12 +21,10 @@ import com.wendu.wendutianqi.utils.LogUtil;
 import com.wendu.wendutianqi.utils.SPUtils;
 import com.wendu.wendutianqi.utils.SystemBarUtil;
 import com.wendu.wendutianqi.view.SecretTextView;
-import com.wendu.wendutianqi.view.flowingdrawer.RevealLayout;
 
 import org.litepal.crud.DataSupport;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -51,15 +47,15 @@ public class FirstActivity extends Activity {
 		first_rl=(RelativeLayout) findViewById(R.id.first_rl);
 		secretTextView1 = (SecretTextView)findViewById(R.id.textview1);
 
-		int random=(int)((Math.random())*3);
+		int random=(int)((Math.random())*4);
 		calendar = Calendar.getInstance();
 		int  hour=calendar.get(Calendar.HOUR_OF_DAY);
 
 		if((hour>=0&&hour<=5)){
 			first_rl.setBackgroundResource(R.color.indigo_dark);
-		}else if(hour>=20&&hour<=23){
+		}else if(hour>21&&hour<=23){
 			first_rl.setBackgroundResource(R.color.indigo);
-		}else if((hour>=18&&hour<=19)){
+		}else if((hour>=19&&hour<=21)){
 			first_rl.setBackgroundResource(R.color.colorPrimaryDark);
 		}
 
@@ -67,7 +63,7 @@ public class FirstActivity extends Activity {
 			if(hour>5&&hour<9){
 				secretTextView1.setText("早安!");
 			}else if(hour>=0&&hour<5){
-				secretTextView1.setText("是什么，让你难以入眠？");
+				secretTextView1.setText(" 是什么，让你难以入眠？ ");
 
 			}else if(hour>=23){
 				secretTextView1.setText("嗨，晚睡的人儿哟");
@@ -85,7 +81,6 @@ public class FirstActivity extends Activity {
 				}else{
 					secretTextView1.setText("这一天过得怎么样？");
 				}
-
 			}
 		}else if(random==2){
 			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
@@ -108,6 +103,12 @@ public class FirstActivity extends Activity {
 				}else{
 					secretTextView1.setText("世界的美都是一样的，区别在于你发现美的那份心境");
 				}
+			}
+		}else if(random==3){
+			if(hour>5&&hour<11){
+				secretTextView1.setText("祝你今天愉快，你明天的愉快留着我明天再祝");
+			}else{
+				secretTextView1.setText("你好哇");
 			}
 		}
 
