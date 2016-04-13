@@ -51,12 +51,12 @@ public class FirstActivity extends Activity {
 		calendar = Calendar.getInstance();
 		int  hour=calendar.get(Calendar.HOUR_OF_DAY);
 
-		if((hour>=0&&hour<=5)){
+		if((hour>=19&&hour<=21)){
+			first_rl.setBackgroundResource(R.color.colorPrimaryDark);
+		}else if((hour>=0&&hour<=5)){
 			first_rl.setBackgroundResource(R.color.indigo_dark);
 		}else if(hour>21&&hour<=23){
 			first_rl.setBackgroundResource(R.color.indigo);
-		}else if((hour>=19&&hour<=21)){
-			first_rl.setBackgroundResource(R.color.colorPrimaryDark);
 		}
 
 		if(random==1){
@@ -89,10 +89,7 @@ public class FirstActivity extends Activity {
 //				if(todayWeather.contains("晴")){
 //					secretTextView1.setText("今天天气还不错吧");
 //				}else
-				if(todayWeather.contains("雨")){
-					first_rl.setBackgroundResource(R.color.cyan);
-					secretTextView1.setText("下雨天你会想起谁？");
-				}else if (todayWeather.contains("霾")){
+				if (todayWeather.contains("霾")){
 					secretTextView1.setText("忘记了从什么时候开始用颜色来描述空气");
 				}else if (todayWeather.contains("雪")){
 					secretTextView1.setText("人生最美，不过凭栏看落雪");
@@ -100,7 +97,10 @@ public class FirstActivity extends Activity {
 					secretTextView1.setText("几朵云在阴天忘了该往哪儿走");
 				}else if (todayWeather.contains("云")){
 					secretTextView1.setText("我有好多奢望。我想爱，想吃，还想在一瞬间变成天上半明半暗的云");
-				}else{
+				}else if(todayWeather.contains("雨")){
+					first_rl.setBackgroundResource(R.color.cyan);
+					secretTextView1.setText("下雨天你会想起谁？");
+				}else {
 					secretTextView1.setText("世界的美都是一样的，区别在于你发现美的那份心境");
 				}
 			}

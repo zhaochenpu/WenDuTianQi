@@ -1,16 +1,11 @@
 package com.wendu.wendutianqi.view;
 
-import android.animation.Animator;
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewAnimationUtils;
-import android.view.animation.AccelerateInterpolator;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.wendu.wendutianqi.R;
@@ -81,7 +76,7 @@ public class NowCard extends CardView{
             if(weatherNow.getCond().getTxt().contains("雨")){
                 now_card_jiangshui_kejian.setText("降水量:"+weatherNow.getPcpn()+"mm");
             }else if(weatherNow.getCond().getTxt().contains("雾")||weatherNow.getCond().getTxt().contains("霾")){
-                now_card_jiangshui_kejian.setText("能见度:"+weatherNow.getPcpn()+"km");
+                now_card_jiangshui_kejian.setText("能见度:"+weatherNow.getVis()+"km");
             }else{
                 now_card_jiangshui_kejian.setVisibility(GONE);
             }

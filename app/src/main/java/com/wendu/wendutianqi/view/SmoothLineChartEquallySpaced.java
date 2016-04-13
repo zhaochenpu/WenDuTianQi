@@ -94,7 +94,7 @@ public class SmoothLineChartEquallySpaced extends View {
 		List<PointF> points = new ArrayList<PointF>(size);		
 		for (int i=0; i<size; i++) {
 			float x = mBorder+(getMeasuredWidth()/dX)/2 + i*width/dX;
-			float y = mBorder + height - (mValues[i]-mMinY)*height/dY; 
+			float y = mBorder + height - (mValues[i]-mMinY)*height/dY;
 			points.add(new PointF(x,y));		
 		}
 
