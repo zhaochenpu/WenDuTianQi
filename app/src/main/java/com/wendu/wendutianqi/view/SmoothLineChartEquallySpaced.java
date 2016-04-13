@@ -14,22 +14,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SmoothLineChartEquallySpaced extends View {
-	
-	private  int CHART_COLOR = 0xFF0099CC;
+	private  int CHART_COLOR =0xfff44336;
+	private  int CHART_COLOR2 = 0xFF0099CC;
 	private static final int CIRCLE_SIZE = 4;
 	private static final int STROKE_SIZE = 1;
 	private static final float SMOOTHNESS = 0.35f; // the higher the smoother, but don't go over 0.5
 	
 	private final Paint mPaint;
+	private final Paint mPaint2;
 	private final Path mPath;
+	private final Path mPath2;
 	private final float mCircleSize;
 	private final float mStrokeSize;
 	private final float mBorder;
 	
 	private float[] mValues;
+	private float[] mValues2;
 	private float mMinY;
 	private float mMaxY;
-	
+	private float mMinY2;
+	private float mMaxY2;
 
 	public SmoothLineChartEquallySpaced(Context context) {
 		this(context, null, 0);
@@ -51,26 +55,40 @@ public class SmoothLineChartEquallySpaced extends View {
 		mPaint = new Paint();
 		mPaint.setAntiAlias(true);
 		mPaint.setStrokeWidth(mStrokeSize);
-		
+		mPaint2 = new Paint();
+		mPaint2.setAntiAlias(true);
+		mPaint2.setStrokeWidth(mStrokeSize);
 		mPath = new Path();
+		mPath2=new Path();
 	}
 	
-	public void setData(float[] values,int tempType) {
-		mValues = values;		
-		if(tempType==0){
-			CHART_COLOR=0xfff44336;
-		}
+	public void setData(float[] values,float[] values2) {
+		mValues = values;
+		mValues2 = values2;
 		if (values != null && values.length > 0) {
 			mMaxY = values[0];
-			//mMinY = values[0].y;
+//			mMinY = values[0];
 			for (float y : values) {
-				if (y > mMaxY) 
+				if (y > mMaxY){
 					mMaxY = y;
-				/*if (y < mMinY)
-					mMinY = y;*/
+				}
+//				else if (y < mMinY){
+//					mMinY = y;
+//				}
 			}
 		}
-				
+		if (values2 != null && values2.length > 0) {
+//			mMaxY2 = values[0];
+			mMinY2 = values[0];
+			for (float y : values) {
+//				if (y > mMaxY2){
+//					mMaxY2 = y;
+//				}else
+				if (y < mMinY2){
+					mMinY2 = y;
+				}
+			}
+		}
 		invalidate();
 	}
 	
@@ -86,46 +104,29 @@ public class SmoothLineChartEquallySpaced extends View {
 		
 		final float dX = mValues.length > 1 ? mValues.length-1  : (2);	
 		final float dY = (mMaxY-mMinY) > 0 ? (mMaxY-mMinY) : (2);
+
 		final float height = getMeasuredHeight() - 2*mBorder;
-		final float width = getMeasuredWidth() - 2*mBorder-getMeasuredWidth()/dX;
+		final float width = getMeasuredWidth() - 2*mBorder-getMeasuredWidth()/size;
 		mPath.reset();
-				
+		mPath2.reset();
 		// calculate point coordinates
-		List<PointF> points = new ArrayList<PointF>(size);		
+		List<PointF> points = new ArrayList<PointF>(size);
+		List<PointF> points2 = new ArrayList<PointF>(size);
 		for (int i=0; i<size; i++) {
-			float x = mBorder+(getMeasuredWidth()/dX)/2 + i*width/dX;
+			float x =i*getMeasuredWidth()/size+(getMeasuredWidth()/size)/2;
 			float y = mBorder + height - (mValues[i]-mMinY)*height/dY;
-			points.add(new PointF(x,y));		
+			float y2 = mBorder + height - (mValues2[i]-mMinY)*height/dY;
+			points.add(new PointF(x,y));
+			points2.add(new PointF(x,y2));
 		}
 
 		// calculate smooth path
-		float lX = 0, lY = 0;
-		mPath.moveTo(points.get(0).x, points.get(0).y);
-		for (int i=1; i<size; i++) {	
-			PointF p = points.get(i);	// current point
-			
-			// first control point
-			PointF p0 = points.get(i-1);	// previous point
-			float x1 = p0.x + lX; 	
-			float y1 = p0.y + lY;
-	
-			// second control point
-			PointF p1 = points.get(i+1 < size ? i+1 : i);	// next point
-			lX = (p1.x-p0.x)/2*SMOOTHNESS;		// (lX,lY) is the slope of the reference line 
-			lY = (p1.y-p0.y)/2*SMOOTHNESS;
-			float x2 = p.x - lX;	
-			float y2 = p.y - lY;
 
-			// add line
-			mPath.cubicTo(x1,y1,x2, y2, p.x, p.y);		
-		}
-		
 
-		// draw path
-		mPaint.setColor(CHART_COLOR);
-		mPaint.setStyle(Style.STROKE);
-		canvas.drawPath(mPath, mPaint);
-		
+		mDraw(size,points,canvas,mPath,mPaint,CHART_COLOR);
+		mDraw(size,points2,canvas,mPath2,mPaint2,CHART_COLOR2);
+
+
 //		// draw area
 //		if (size > 0) {
 //			mPaint.setStyle(Style.FILL);
@@ -136,17 +137,43 @@ public class SmoothLineChartEquallySpaced extends View {
 //			canvas.drawPath(mPath, mPaint);
 //		}
 
+	}
+
+
+	private void mDraw(int size,List<PointF> points,Canvas canvas,Path mPath,Paint paint, int COLOR){
+		mPath.moveTo(points.get(0).x, points.get(0).y);
+		float lX = 0, lY = 0;
+		for (int i=1; i<size; i++) {
+			PointF p = points.get(i);	// current point
+			// first control point
+			PointF p0 = points.get(i-1);	// previous point
+			float x1 = p0.x + lX;
+			float y1 = p0.y + lY;
+
+			// second control point
+			PointF p1 = points.get(i+1 < size ? i+1 : i);	// next point
+			lX = (p1.x-p0.x)/2*SMOOTHNESS;		// (lX,lY) is the slope of the reference line
+			lY = (p1.y-p0.y)/2*SMOOTHNESS;
+			float x2 = p.x - lX;
+			float y2 = p.y - lY;
+
+			// add line
+			mPath.cubicTo(x1,y1,x2, y2, p.x, p.y);
+		}
+		paint.setColor(COLOR);
+		paint.setStyle(Style.STROKE);
+		canvas.drawPath(mPath, paint);
+
 		// draw circles
-		mPaint.setColor(CHART_COLOR);
-		mPaint.setStyle(Style.FILL_AND_STROKE);
+		paint.setColor(COLOR);
+		paint.setStyle(Style.FILL_AND_STROKE);
 		for (PointF point : points) {
-			canvas.drawCircle(point.x, point.y, mCircleSize/2, mPaint);
+			canvas.drawCircle(point.x, point.y, mCircleSize/2, paint);
 		}
-		mPaint.setStyle(Style.FILL);
-		mPaint.setColor(Color.WHITE);
+		paint.setStyle(Style.FILL);
+		paint.setColor(Color.WHITE);
 		for (PointF point : points) {
-			canvas.drawCircle(point.x, point.y, (mCircleSize-mStrokeSize)/2, mPaint);
+			canvas.drawCircle(point.x, point.y, (mCircleSize-mStrokeSize)/2, paint);
 		}
-		
 	}
 }

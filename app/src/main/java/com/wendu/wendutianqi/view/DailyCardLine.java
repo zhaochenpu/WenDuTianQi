@@ -45,7 +45,7 @@ public class DailyCardLine extends CardView{
 
     public void initView(){
         daily_card_max_line=(SmoothLineChartEquallySpaced) view.findViewById(R.id.daily_card_max_line);
-        daily_card_min_line=(SmoothLineChartEquallySpaced) view.findViewById(R.id.daily_card_min_line);
+//        daily_card_min_line=(SmoothLineChartEquallySpaced) view.findViewById(R.id.daily_card_min_line);
 //        calendar = Calendar.getInstance();
         sdf=new SimpleDateFormat("yyyy-MM-dd");
 //        daily_card_recyclerview=(RecyclerView) view.findViewById(R.id.daily_card_recyclerview);
@@ -79,13 +79,13 @@ public class DailyCardLine extends CardView{
             }
 
             TextView daily_forecats_day_tv=(TextView)findViewById(daily_forecats_day[i]);
-            daily_forecats_day_tv.setText(dailyForecast.get(i).getCond().getTxt_d()+"\\n"+dailyForecast.get(i).getTmp().getMax()+"℃");
+            daily_forecats_day_tv.setText(dailyForecast.get(i).getCond().getTxt_d()+"\n"+dailyForecast.get(i).getTmp().getMax()+"℃");
 
             TextView daily_forecats_night_tv=(TextView)findViewById(daily_forecats_night[i]);
-            daily_forecats_night_tv.setText(dailyForecast.get(i).getCond().getTxt_n()+"\\n"+dailyForecast.get(i).getTmp().getMin()+"℃");
+            daily_forecats_night_tv.setText(dailyForecast.get(i).getCond().getTxt_n()+"\n"+dailyForecast.get(i).getTmp().getMin()+"℃");
         }
-        daily_card_max_line.setData(maxline,0);
-        daily_card_min_line.setData(minline,1);
+        daily_card_max_line.setData(maxline,minline);
+//        daily_card_min_line.setData(minline,1);
 
     }
 
