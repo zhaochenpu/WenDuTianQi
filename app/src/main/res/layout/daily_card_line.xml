@@ -10,7 +10,69 @@
             android:orientation="vertical">
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                >
+                <TextView
+                    android:id="@+id/daily_forecats_week0"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textSize="12sp"
+                    />
+                <TextView
+                    android:id="@+id/daily_forecats_week1"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textSize="12sp"
+                    />
+                <TextView
+                    android:id="@+id/daily_forecats_week2"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textSize="12sp"
+                    />
+                <TextView
+                    android:id="@+id/daily_forecats_week3"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textSize="12sp"
+                    />
+                <TextView
+                    android:id="@+id/daily_forecats_week4"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textSize="12sp"
+                    />
+                <TextView
+                    android:id="@+id/daily_forecats_week5"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textSize="12sp"
+                    />
+                <TextView
+                    android:id="@+id/daily_forecats_week6"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textSize="12sp"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
                 <TextView
                     android:id="@+id/daily_forecats_date0"
                     android:layout_width="0dp"
@@ -68,70 +130,11 @@
                     android:textSize="10sp"
                     />
             </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:id="@+id/daily_forecats_week0"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textSize="10sp"
-                    />
-                <TextView
-                    android:id="@+id/daily_forecats_week1"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textSize="10sp"
-                    />
-                <TextView
-                    android:id="@+id/daily_forecats_week2"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textSize="10sp"
-                    />
-                <TextView
-                    android:id="@+id/daily_forecats_week3"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textSize="10sp"
-                    />
-                <TextView
-                    android:id="@+id/daily_forecats_week4"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textSize="10sp"
-                    />
-                <TextView
-                    android:id="@+id/daily_forecats_week5"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textSize="10sp"
-                    />
-                <TextView
-                    android:id="@+id/daily_forecats_week6"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textSize="10sp"
-                    />
-            </LinearLayout>
+            
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="5dp">
                 <TextView
                     android:id="@+id/daily_forecats_day0"
                     android:layout_width="0dp"
@@ -139,7 +142,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:gravity="center"
-                    android:textSize="10sp"
+                    android:textSize="12sp"
                     />
                 <TextView
                     android:id="@+id/daily_forecats_day1"
@@ -148,7 +151,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:gravity="center"
-                    android:textSize="10sp"
+                    android:textSize="12sp"
                     />
                 <TextView
                     android:id="@+id/daily_forecats_day2"
@@ -157,7 +160,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:gravity="center"
-                    android:textSize="10sp"
+                    android:textSize="12sp"
                     />
                 <TextView
                     android:id="@+id/daily_forecats_day3"
@@ -166,7 +169,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:gravity="center"
-                    android:textSize="10sp"
+                    android:textSize="12sp"
                     />
                 <TextView
                     android:id="@+id/daily_forecats_day4"
@@ -175,7 +178,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:gravity="center"
-                    android:textSize="10sp"
+                    android:textSize="12sp"
                     />
                 <TextView
                     android:id="@+id/daily_forecats_day5"
@@ -184,7 +187,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:gravity="center"
-                    android:textSize="10sp"
+                    android:textSize="12sp"
                     />
                 <TextView
                     android:id="@+id/daily_forecats_day6"
@@ -193,20 +196,16 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:gravity="center"
-                    android:textSize="10sp"
+                    android:textSize="12sp"
                     />
             </LinearLayout>
             <com.wendu.wendutianqi.view.SmoothLineChartEquallySpaced
                 android:id="@+id/daily_card_max_line"
                 android:layout_width="match_parent"
                 android:layout_marginTop="20dp"
-                android:layout_height="50dp"
+                android:layout_height="100dp"
                 android:background="@android:color/white" />
-            <com.wendu.wendutianqi.view.SmoothLineChartEquallySpaced
-                android:id="@+id/daily_card_min_line"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@android:color/white" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -215,63 +214,56 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
                     android:gravity="center"
-                    android:textSize="10sp"
+                    android:textSize="12sp"
                     />
                 <TextView
                     android:id="@+id/daily_forecats_night1"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
                     android:gravity="center"
-                    android:textSize="10sp"
+                    android:textSize="12sp"
                     />
                 <TextView
                     android:id="@+id/daily_forecats_night2"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
                     android:gravity="center"
-                    android:textSize="10sp"
+                    android:textSize="12sp"
                     />
                 <TextView
                     android:id="@+id/daily_forecats_night3"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
                     android:gravity="center"
-                    android:textSize="10sp"
+                    android:textSize="12sp"
                     />
                 <TextView
                     android:id="@+id/daily_forecats_night4"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
                     android:gravity="center"
-                    android:textSize="10sp"
+                    android:textSize="12sp"
                     />
                 <TextView
                     android:id="@+id/daily_forecats_night5"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
                     android:gravity="center"
-                    android:textSize="10sp"
+                    android:textSize="12sp"
                     />
                 <TextView
                     android:id="@+id/daily_forecats_night6"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
                     android:gravity="center"
-                    android:textSize="10sp"
+                    android:textSize="12sp"
                     />
             </LinearLayout>
         </LinearLayout>
