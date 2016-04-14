@@ -114,8 +114,6 @@
                             app:contentPadding="10dp"
                             app:cardPreventCornerOverlap="true"
                             app:cardUseCompatPadding="true"
-                            android:clickable="true"
-                            android:foreground="?android:attr/selectableItemBackground"
                             android:visibility="gone"
                             />
                     </LinearLayout>

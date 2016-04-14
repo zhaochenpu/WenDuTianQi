@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,20 +20,18 @@ import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.wendu.wendutianqi.R;
 import com.wendu.wendutianqi.net.Location;
-import com.wendu.wendutianqi.net.Urls;
 import com.wendu.wendutianqi.utils.CitySPUtils;
 import com.wendu.wendutianqi.utils.LogUtil;
 import com.wendu.wendutianqi.utils.SnackbarUtil;
 import com.wendu.wendutianqi.utils.SystemBarUtil;
-import com.wendu.wendutianqi.view.FindCityDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -158,6 +155,7 @@ public class SelectCity extends AppCompatActivity {
             case 200:
                 if (resultCode == RESULT_OK) {
                     citylist.clear();
+                    citymap= CitySPUtils.getAll(SelectCity.this);
                     for (Object entry : citymap.keySet()){
                         citylist.add((String)entry);
                     }
@@ -201,7 +199,7 @@ public class SelectCity extends AppCompatActivity {
                                 notifyItemInserted(position);
                             }
                         }
-                    });
+                    }).setActionTextColor(0xffffc107);
                     Snackbar_remove.show();
                     return false;
                 }

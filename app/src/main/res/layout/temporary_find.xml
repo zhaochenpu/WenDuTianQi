@@ -74,7 +74,7 @@
                             app:contentPadding="10dp"
                             app:cardPreventCornerOverlap="true"
                             app:cardUseCompatPadding="true" />
-                        <com.wendu.wendutianqi.view.DailyCard
+                        <com.wendu.wendutianqi.view.DailyCardLine
                             android:id="@+id/temporary_find_dailycard"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -84,7 +84,6 @@
                             app:contentPadding="10dp"
                             app:cardPreventCornerOverlap="true"
                             app:cardUseCompatPadding="true"
-                            android:clickable="true"
                             android:foreground="?android:attr/selectableItemBackground"
                             />
                     </LinearLayout>

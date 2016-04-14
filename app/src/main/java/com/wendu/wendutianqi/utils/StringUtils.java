@@ -27,7 +27,7 @@ public class StringUtils {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        String[] weekDays = {"星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"};
+        String[] weekDays = {"周日", "周一", "周二", "周三", "周四", "周五", "周六"};
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
 
@@ -44,7 +44,7 @@ public class StringUtils {
             try {
                 int month=Integer.parseInt(strs[1]);
                 int day=Integer.parseInt(strs[2]);
-                date=month+"月"+day+"日";
+                date=month+"/"+day;
             }catch (Exception e){
 
             }

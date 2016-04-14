@@ -7,8 +7,11 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.graphics.PointF;
+import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.View;
+
+import com.wendu.wendutianqi.utils.DisplayUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +31,13 @@ public class SmoothLineChartEquallySpaced extends View {
 	private final float mStrokeSize;
 	private final float mBorder;
 	
-	private float[] mValues;
-	private float[] mValues2;
+	private int[] mValues;
+	private int[] mValues2;
 	private float mMinY;
 	private float mMaxY;
 	private float mMinY2;
 	private float mMaxY2;
+	private Context mcontext;
 
 	public SmoothLineChartEquallySpaced(Context context) {
 		this(context, null, 0);
@@ -41,11 +45,12 @@ public class SmoothLineChartEquallySpaced extends View {
 
 	public SmoothLineChartEquallySpaced(Context context, AttributeSet attrs) {
 		this(context, attrs, 0);
+		mcontext=context;
 	}
 
 	public SmoothLineChartEquallySpaced(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-
+		mcontext=context;
 		float scale = context.getResources().getDisplayMetrics().density;
 		
 		mCircleSize = scale * CIRCLE_SIZE;
@@ -62,7 +67,7 @@ public class SmoothLineChartEquallySpaced extends View {
 		mPath2=new Path();
 	}
 	
-	public void setData(float[] values,float[] values2) {
+	public void setData(int[] values,int[] values2) {
 		mValues = values;
 		mValues2 = values2;
 		if (values != null && values.length > 0) {
@@ -114,8 +119,8 @@ public class SmoothLineChartEquallySpaced extends View {
 		List<PointF> points2 = new ArrayList<PointF>(size);
 		for (int i=0; i<size; i++) {
 			float x =i*getMeasuredWidth()/size+(getMeasuredWidth()/size)/2;
-			float y = mBorder + height - (mValues[i]-mMinY)*height/dY;
-			float y2 = mBorder + height - (mValues2[i]-mMinY)*height/dY;
+			float y = mBorder + height - (mValues[i]-mMinY)*height/dY+DisplayUtil.sp2px(mcontext,12);
+			float y2 = mBorder + height - (mValues2[i]-mMinY)*height/dY+DisplayUtil.sp2px(mcontext,12);
 			points.add(new PointF(x,y));
 			points2.add(new PointF(x,y2));
 		}
@@ -123,8 +128,8 @@ public class SmoothLineChartEquallySpaced extends View {
 		// calculate smooth path
 
 
-		mDraw(size,points,canvas,mPath,mPaint,CHART_COLOR);
-		mDraw(size,points2,canvas,mPath2,mPaint2,CHART_COLOR2);
+		mDraw(size,points,canvas,mPath,mPaint,CHART_COLOR,mValues);
+		mDraw(size,points2,canvas,mPath2,mPaint2,CHART_COLOR2,mValues2);
 
 
 //		// draw area
@@ -140,7 +145,7 @@ public class SmoothLineChartEquallySpaced extends View {
 	}
 
 
-	private void mDraw(int size,List<PointF> points,Canvas canvas,Path mPath,Paint paint, int COLOR){
+	private void mDraw(int size,List<PointF> points,Canvas canvas,Path mPath,Paint paint, int COLOR,int[] values){
 		mPath.moveTo(points.get(0).x, points.get(0).y);
 		float lX = 0, lY = 0;
 		for (int i=1; i<size; i++) {
@@ -170,10 +175,25 @@ public class SmoothLineChartEquallySpaced extends View {
 		for (PointF point : points) {
 			canvas.drawCircle(point.x, point.y, mCircleSize/2, paint);
 		}
+		TextPaint textPaint = new TextPaint();
+		float sp10=DisplayUtil.sp2px(mcontext,10);
+		textPaint.setTextSize(sp10);
+		textPaint.setColor(COLOR);
+		if(values==mValues){
+			for(int i=0;i<values.length;i++){
+				canvas.drawText(values[i]+"°",points.get(i).x-sp10/2,points.get(i).y-mCircleSize,textPaint);
+			}
+		}else{
+			for(int i=0;i<values.length;i++){
+				canvas.drawText(values[i]+"°",points.get(i).x-sp10/2,points.get(i).y+3*mCircleSize,textPaint);
+			}
+		}
+
 		paint.setStyle(Style.FILL);
 		paint.setColor(Color.WHITE);
 		for (PointF point : points) {
 			canvas.drawCircle(point.x, point.y, (mCircleSize-mStrokeSize)/2, paint);
 		}
+
 	}
 }

@@ -186,8 +186,12 @@ public class OneCityActivity extends AppCompatActivity {
                 Intent intent =null;
                 switch (item.getItemId()){
                     case R.id.menu_citylist:
-                                intent =new Intent(OneCityActivity.this,SelectCity.class);
-
+                        new Handler().postDelayed(new Runnable(){
+                            public void run() {
+                                Intent  intent2 =new Intent(OneCityActivity.this,SelectCity.class);
+                                startActivityForResult(intent2,100);
+                            }
+                        },150);
                         break;
                     case R.id.menu_search:
                         intent=new Intent(OneCityActivity.this,TemporaryFind.class);

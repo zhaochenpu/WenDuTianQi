@@ -7,12 +7,9 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
-
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -26,9 +23,6 @@ import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
 import com.google.gson.Gson;
@@ -46,10 +40,9 @@ import com.wendu.wendutianqi.utils.CitySPUtils;
 import com.wendu.wendutianqi.utils.LogUtil;
 import com.wendu.wendutianqi.utils.SnackbarUtil;
 import com.wendu.wendutianqi.utils.SystemBarUtil;
-import com.wendu.wendutianqi.view.DailyCard;
+import com.wendu.wendutianqi.view.DailyCardLine;
 import com.wendu.wendutianqi.view.ErrorView;
 import com.wendu.wendutianqi.view.FindCityAdapter;
-import com.wendu.wendutianqi.view.FindCityDialog;
 import com.wendu.wendutianqi.view.HoursCard;
 import com.wendu.wendutianqi.view.NowCard;
 
@@ -77,7 +70,7 @@ public class TemporaryFind extends AppCompatActivity{
     private CoordinatorLayout coordinatorLayout;
     private NowCard nowCard;
     private HoursCard hoursCard;
-    private DailyCard dailyCard;
+    private DailyCardLine dailyCard;
     private Toolbar toolbar;
     private ScrollView temporary_find_scroll;
     private SearchView searchView;
@@ -133,7 +126,7 @@ public class TemporaryFind extends AppCompatActivity{
 
         nowCard=(NowCard) findViewById(R.id.temporary_find_nowcard);
         hoursCard=(HoursCard) findViewById(R.id.temporary_find_hourscard);
-        dailyCard=(DailyCard) findViewById(R.id.temporary_find_dailycard);
+        dailyCard=(DailyCardLine) findViewById(R.id.temporary_find_dailycard);
 
         errorView=(ErrorView) findViewById(R.id.temporary_find_error);
 
