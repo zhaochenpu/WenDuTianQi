@@ -115,7 +115,7 @@ public class FirstActivity extends Activity {
 		first=(boolean) SPUtils.get(this,"first",true);
 		if(first){
 			new GetAllCity().execute(Urls.ALL_CHINA_CITY);
-			SPUtils.put(this,"first",false);
+
 		}
 
 
@@ -177,7 +177,15 @@ public class FirstActivity extends Activity {
 				}else{
 					first=false;
 				}
-
+				SPUtils.put(FirstActivity.this,"first",false);
+			}else{
+				if(!first){
+					Intent intent=new Intent(FirstActivity.this,OneCityActivity.class);
+					startActivity(intent);
+					finish();
+				}else{
+					first=false;
+				}
 			}
 
 

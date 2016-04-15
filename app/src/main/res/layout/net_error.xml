@@ -4,20 +4,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:visibility="gone">
-    <ImageView
-        android:id="@+id/error_iv"
+    <Button
+        android:id="@+id/net_error_bt"
+        android:layout_marginTop="10dp"
+        android:padding="10dp"
         android:layout_centerInParent="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/loading_failure"/>
+        android:text="请检查网络后点击重试"
+        />
     <TextView
         android:id="@+id/error_tv"
         android:layout_marginTop="10dp"
         android:padding="10dp"
-        android:layout_below="@+id/error_iv"
-        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/net_error_bt"
+        android:layout_centerInParent="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="网络连接异常，请检查您的网络"
         />
+    <ImageView
+        android:id="@+id/error_iv"
+        android:layout_above="@+id/error_tv"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/loading_failure"/>
+
 </RelativeLayout>

@@ -1,7 +1,6 @@
 package com.wendu.wendutianqi.activity;
 
 
-
 import android.animation.Animator;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,6 +11,7 @@ import android.os.Handler;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -85,7 +85,7 @@ public class OneCityActivity extends AppCompatActivity {
     private Calendar calendar;
     private String todayweather;
     private List<DailyForecast> dailyForecast;
-
+    private NestedScrollView one_city_scroll;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.one_city);
@@ -136,7 +136,7 @@ public class OneCityActivity extends AppCompatActivity {
         headImageView=(ImageView) findViewById(R.id.one_city_iv);
 
 //        setHead();
-//        one_city_scroll=(NestedScrollView) findViewById(R.id.one_city_scroll);
+        one_city_scroll=(NestedScrollView) findViewById(R.id.one_city_scroll);
         nowCard=(NowCard) findViewById(R.id.one_city_nowcard);
         hoursCard=(HoursCard) findViewById(R.id.one_city_hourscard);
         dailyCard=(DailyCardLine) findViewById(R.id.one_city_dailycard);
@@ -165,19 +165,27 @@ public class OneCityActivity extends AppCompatActivity {
 
             }
         });
-//
-//        dailyCard.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                Intent intent = new Intent(OneCityActivity.this,DailyActivity.class);
-//                Bundle bundle = new Bundle();
-//                bundle.putSerializable("dailyForecast", (Serializable) dailyForecast);
-//                bundle.putString("place",place);
-//                intent.putExtra("daily",bundle);
-//                startActivity(intent);
-//            }
-//        });
+
+        errorView.setOnLodErrorListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(location){
+                    mLocationClient.start();
+                }else{
+                    new GetWeatherData().execute(Urls.WEATHER_URL);
+                }
+            }
+        });
+        errorView.setOnNetErrorListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(location){
+                    mLocationClient.start();
+                }else{
+                    new GetWeatherData().execute(Urls.WEATHER_URL);
+                }
+            }
+        });
 
         mMenuFragment.setMenuItemSelectedListener(new MyMenuFragment.MenuItemSelectedListener() {
             @Override
@@ -306,10 +314,13 @@ public class OneCityActivity extends AppCompatActivity {
 //                            mLocationClient.start();
 //                        }
                     }else{
+                        mSwipeLayout.setVisibility(View.GONE);
                         errorView.LodError();
                     }
 
             }else {
+                mSwipeLayout.setVisibility(View.GONE);
+                SnackbarUtil.showLongWarning(coordinatorLayout," 额，没网了...");
                 errorView.ShowError();
             }
 
@@ -411,6 +422,11 @@ public class OneCityActivity extends AppCompatActivity {
                 collapsingToolbar .setTitle(place);
                 new GetWeatherData().execute(Urls.WEATHER_URL);
 
+            }else{
+                mSwipeLayout.setRefreshing(false);
+                mSwipeLayout.setVisibility(View.GONE);
+                SnackbarUtil.showLongWarning(coordinatorLayout," 额，定位失败了...");
+                errorView.ShowError();
             }
             mLocationClient.stop();
         }

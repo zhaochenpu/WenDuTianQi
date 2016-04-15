@@ -17,19 +17,19 @@
     <TextView
         android:id="@+id/error_iv2"
         android:padding="10dp"
-        android:layout_centerInParent="true"
+        android:layout_above="@+id/lod_error_bt"
+        android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=" 哎呀，网络数据错误"
         />
-    <TextView
-        android:id="@+id/error_bt"
+    <Button
+        android:id="@+id/lod_error_bt"
         android:layout_marginTop="10dp"
         android:padding="10dp"
-        android:layout_below="@+id/error_iv2"
-        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="请尝试下拉重新获取数据"
+        android:text="请点击尝试重新获取数据"
         />
 </RelativeLayout>

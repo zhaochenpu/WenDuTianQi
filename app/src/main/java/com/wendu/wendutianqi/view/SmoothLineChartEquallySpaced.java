@@ -104,14 +104,12 @@ public class SmoothLineChartEquallySpaced extends View {
 			return;
 
 		int size = mValues.length;
-		
 
-		
-		final float dX = mValues.length > 1 ? mValues.length-1  : (2);	
+//		final float dX = mValues.length > 1 ? mValues.length-1  : (2);
 		final float dY = (mMaxY-mMinY) > 0 ? (mMaxY-mMinY) : (2);
 
 		final float height = getMeasuredHeight() - 2*mBorder;
-		final float width = getMeasuredWidth() - 2*mBorder-getMeasuredWidth()/size;
+//		final float width = getMeasuredWidth() - 2*mBorder-getMeasuredWidth()/size;
 		mPath.reset();
 		mPath2.reset();
 		// calculate point coordinates
@@ -127,10 +125,8 @@ public class SmoothLineChartEquallySpaced extends View {
 
 		// calculate smooth path
 
-
 		mDraw(size,points,canvas,mPath,mPaint,CHART_COLOR,mValues);
 		mDraw(size,points2,canvas,mPath2,mPaint2,CHART_COLOR2,mValues2);
-
 
 //		// draw area
 //		if (size > 0) {

@@ -7,7 +7,6 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.wendu.wendutianqi.utils.SnackbarUtil;
-import com.wendu.wendutianqi.utils.ToastUtil;
 
 /**
  * Created by el on 2016/3/15.
@@ -19,7 +18,10 @@ public class Location {
         option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy
         );//可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
         option.setCoorType("bd09ll");//可选，默认gcj02，设置返回的定位结果坐标系
-        int span = 1000;
+        option.timeOut=10000;
+        option.setTimeOut(10000);
+
+        int span = 3000;
         option.setScanSpan(span);//可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
         option.setIsNeedAddress(true);//可选，设置是否需要地址信息，默认不需要
         option.setOpenGps(true);//可选，默认false,设置是否使用gps
@@ -49,7 +51,7 @@ public class Location {
             } else if (location.getLocType() == BDLocation.TypeOffLineLocation) {// 离线定位结果
 //                ToastUtil.showShort(context,"离线定位成功");
 //                SnackbarUtil.showShortConfirm(coordinatorLayout," 离线定位成功 ");
-                return  true;
+//                return  true;
             } else if (location.getLocType() == BDLocation.TypeServerError) {
 //                ToastUtil.showShort(context, "服务端网络定位失败");
                 SnackbarUtil.showShortAlert(coordinatorLayout," 服务端网络定位失败 X﹏X");
