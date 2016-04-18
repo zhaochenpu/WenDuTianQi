@@ -3,6 +3,7 @@
     android:id="@+id/lod_error"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:visibility="gone"
     >
     <TextView
@@ -26,10 +27,15 @@
     <Button
         android:id="@+id/lod_error_bt"
         android:layout_marginTop="10dp"
-        android:padding="10dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
         android:layout_centerInParent="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="请点击尝试重新获取数据"
+        android:textColor="@color/SecondaryText"
+        android:background="@color/grey_light"
         />
 </RelativeLayout>

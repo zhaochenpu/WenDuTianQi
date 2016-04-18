@@ -252,6 +252,8 @@ public class OneCityActivity extends AppCompatActivity {
                 }
 
                     if(TextUtils.equals("ok",status)){
+                        mSwipeLayout.setVisibility(View.VISIBLE);
+                        errorView.ErrorGone();
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                             Animator animator = ViewAnimationUtils.createCircularReveal(coordinatorLayout,(coordinatorLayout.getWidth()/2),(coordinatorLayout.getHeight()/2)
                                     ,0,coordinatorLayout.getWidth());
@@ -418,7 +420,6 @@ public class OneCityActivity extends AppCompatActivity {
 //                    }
 //                }
 
-                LogUtil.e(place);
                 collapsingToolbar .setTitle(place);
                 new GetWeatherData().execute(Urls.WEATHER_URL);
 
@@ -435,8 +436,6 @@ public class OneCityActivity extends AppCompatActivity {
     @Override
     public void onResume(){
         super.onResume();
-
-
     }
 
 
@@ -458,7 +457,7 @@ public class OneCityActivity extends AppCompatActivity {
             case 100:
                 if (resultCode == RESULT_OK) {
                     String returnedData = data.getStringExtra("select_place");
-                    LogUtil.e(returnedData+".......");
+
                     if(TextUtils.equals(returnedData,"location")){
                         if(!location){
                             toolbar.setLogo(R.mipmap.location_white);

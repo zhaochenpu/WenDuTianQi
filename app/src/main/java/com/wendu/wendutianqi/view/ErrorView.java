@@ -24,12 +24,11 @@ public class ErrorView extends RelativeLayout{
     public ErrorView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context=context;
+
         View neterrorview = LayoutInflater.from(context).inflate(R.layout.net_error,null);
         View loderrorview = LayoutInflater.from(context).inflate(R.layout.lod_error,null);
-        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT
-        );
+        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
         addView(neterrorview, p);
         addView(loderrorview, p);
 
@@ -47,19 +46,18 @@ public class ErrorView extends RelativeLayout{
             NetError();
         }
     }
-
+    public void ErrorGone(){
+        netErrorRL.setVisibility(View.GONE);
+        lodErrorRL.setVisibility(View.GONE);
+    }
     public void NetError(){
-        if(netErrorRL.getVisibility()==View.VISIBLE){
-            netErrorRL.setVisibility(View.GONE);
-        }else{
+        if(netErrorRL.getVisibility()!=View.VISIBLE){
             netErrorRL.setVisibility(View.VISIBLE);
         }
     }
 
     public void LodError(){
-        if(lodErrorRL.getVisibility()==View.VISIBLE){
-            lodErrorRL.setVisibility(View.GONE);
-        }else{
+        if(lodErrorRL.getVisibility()!=View.VISIBLE){
             lodErrorRL.setVisibility(View.VISIBLE);
         }
     }

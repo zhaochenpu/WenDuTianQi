@@ -3,7 +3,6 @@ package com.wendu.wendutianqi.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -32,7 +31,7 @@ import java.util.List;
 public class FirstActivity extends Activity {
 
 	private SecretTextView secretTextView1;
-	private String City1,City2;
+//	private String City1,City2;
 	private boolean first=true;
 	private Calendar calendar;
 	private RelativeLayout first_rl;
@@ -43,10 +42,22 @@ public class FirstActivity extends Activity {
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.first_layout);
 		SystemBarUtil.transparencyBar(FirstActivity.this);
-		City2=(String) SPUtils.get(this,"City2","");
+
+//		City2=(String) SPUtils.get(this,"City2","");
 		first_rl=(RelativeLayout) findViewById(R.id.first_rl);
 		secretTextView1 = (SecretTextView)findViewById(R.id.textview1);
 
+		first=(boolean) SPUtils.get(this,"first",true);
+		if(first){
+//			new GetAllCity().execute(Urls.ALL_CHINA_CITY);
+			getAllCity();
+		}
+
+		setSecretTextView();
+
+	}
+
+	private void setSecretTextView(){
 		int random=(int)((Math.random())*4);
 		calendar = Calendar.getInstance();
 		int  hour=calendar.get(Calendar.HOUR_OF_DAY);
@@ -112,29 +123,22 @@ public class FirstActivity extends Activity {
 			}
 		}
 
-		first=(boolean) SPUtils.get(this,"first",true);
-		if(first){
-			new GetAllCity().execute(Urls.ALL_CHINA_CITY);
-
-		}
-
-
 		secretTextView1.show();    // fade in
 		secretTextView1.setDuration(1600);
-        secretTextView1.setIsVisible(true);
+		secretTextView1.setIsVisible(true);
 
-    	new Handler().postDelayed(new Runnable(){
+		new Handler().postDelayed(new Runnable(){
 
-    	    public void run() {
-    	    	secretTextView1.toggle();
-    	    	 secretTextView1.setDuration(1200);
+			public void run() {
+				secretTextView1.toggle();
+				secretTextView1.setDuration(1200);
 
 				secretTextView1.SecretTextVieweAnimatorlintener(new SecretTextView.SecretTextVieweAnimator(){
 					public void OnTAL(){
 						Intent intent=null;
-						if(TextUtils.isEmpty(City2)){
+//						if(TextUtils.isEmpty(City2)){
 							intent=new Intent(FirstActivity.this,OneCityActivity.class);
-						}
+//						}
 // 						else if(citys.get(0).type==1){
 //							intent=new Intent(FirstActivity.this,OneCityActivity.class);
 //							intent.putExtra("City1",citys.get(0).city1);
@@ -149,48 +153,41 @@ public class FirstActivity extends Activity {
 
 					}
 				});
-    	    }
-
-    	 }, 1800);
-	}
-
-	private class GetAllCity extends AsyncTask<String, Integer, String> {
-
-		@Override
-		protected String doInBackground(String... params) {
-
-			return MyOkhttp.get(params[0]);
-		}
-
-		protected void onPostExecute(String result) {
-			super.onPostExecute(result);
-			if(TextUtils.equals(MyJson.getString(result,"status"),"ok")&&!TextUtils.isEmpty(MyJson.getString(result,"city_info"))){
-				LogUtil.e(result);
-				Gson gson=new Gson();
-				List<AllChinaPlace> citylist= gson.fromJson(MyJson.getString(result,"city_info"), new TypeToken<List<AllChinaPlace>>() {}.getType());
-				DataSupport.saveAll(citylist);
-
-				if(!first){
-					Intent intent=new Intent(FirstActivity.this,OneCityActivity.class);
-					startActivity(intent);
-					finish();
-				}else{
-					first=false;
-				}
-				SPUtils.put(FirstActivity.this,"first",false);
-			}else{
-				if(!first){
-					Intent intent=new Intent(FirstActivity.this,OneCityActivity.class);
-					startActivity(intent);
-					finish();
-				}else{
-					first=false;
-				}
 			}
 
-
-		}
+		}, 1800);
 	}
 
+
+	private void getAllCity(){
+		new Thread() {
+			public void run() {
+				String result=MyOkhttp.get(Urls.ALL_CHINA_CITY);
+				LogUtil.e(result);
+				if(TextUtils.equals(MyJson.getString(result,"status"),"ok")&&!TextUtils.isEmpty(MyJson.getString(result,"city_info"))){
+
+					Gson gson=new Gson();
+					List<AllChinaPlace> citylist= gson.fromJson(MyJson.getString(result,"city_info"), new TypeToken<List<AllChinaPlace>>() {}.getType());
+					DataSupport.saveAll(citylist);
+					if(!first){
+						Intent intent=new Intent(FirstActivity.this,OneCityActivity.class);
+						startActivity(intent);
+						finish();
+					}else{
+						first=false;
+					}
+					SPUtils.put(FirstActivity.this,"first",false);
+				}else{
+					if(!first){
+						Intent intent=new Intent(FirstActivity.this,OneCityActivity.class);
+						startActivity(intent);
+						finish();
+					}else{
+						first=false;
+					}
+				}
+			}
+		}.start();
+	}
 
 }

@@ -2,26 +2,13 @@ package com.wendu.wendutianqi.net;
 
 import android.text.TextUtils;
 
-import com.wendu.wendutianqi.R;
-
 import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.Map;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 
 
@@ -32,12 +19,11 @@ public class MyOkhttp {
 
     public static OkHttpClient client = new OkHttpClient();
 
-
-
-
     public static String get(String url){
         try {
+         client.newBuilder().connectTimeout(10000,TimeUnit.MILLISECONDS);
         Request request = new Request.Builder().url(url).build();
+
         Response response = client.newCall(request).execute();
         if (response.isSuccessful()) {
             return response.body().string();
@@ -53,6 +39,7 @@ public class MyOkhttp {
 
     public static String post(String url, Map<String, String> params){
         try {
+            client.newBuilder().connectTimeout(10000,TimeUnit.MILLISECONDS);
             FormBody.Builder builder = new FormBody.Builder();
             addParams(builder,params);
             Request request = new Request.Builder()
@@ -84,7 +71,5 @@ public class MyOkhttp {
             }
         }
     }
-
-
 
 }
