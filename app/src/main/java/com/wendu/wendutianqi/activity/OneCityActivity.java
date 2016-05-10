@@ -132,6 +132,7 @@ public class OneCityActivity extends AppCompatActivity {
 
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.one_city_CollapsingToolbarLayout);
         collapsingToolbar.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
+        collapsingToolbar.setExpandedTitleColor(getResources().getColor(R.color.white90));
 
         headImageView=(ImageView) findViewById(R.id.one_city_iv);
 
@@ -382,10 +383,11 @@ public class OneCityActivity extends AppCompatActivity {
             @Override
             public void onGenerated(Palette palette) {
 
-                bgColor=palette.getDarkVibrantColor(getResources().getColor(R.color.white));
-                titleColor=palette.getLightVibrantColor(getResources().getColor(R.color.white));
+                bgColor=palette.getVibrantColor(getResources().getColor(R.color.colorPrimary));
+//                titleColor=palette.getLightVibrantColor(getResources().getColor(R.color.white));
+
                 collapsingToolbar.setContentScrimColor(bgColor);
-                collapsingToolbar.setExpandedTitleColor(titleColor);
+//                collapsingToolbar.setExpandedTitleColor(titleColor);
 //                SystemBarUtil.setStatusBarColor(OneCityActivity.this,bgColor);
 //                Palette.Swatch swatch = palette.getVibrantSwatch();
 //                Palette.Swatch swatch2 = palette.getLightVibrantSwatch();
@@ -399,7 +401,6 @@ public class OneCityActivity extends AppCompatActivity {
 //                }
             }
         });
-//        headImageView.setDrawingCacheEnabled(false);
     }
 
     class MyLocationListener implements BDLocationListener {
