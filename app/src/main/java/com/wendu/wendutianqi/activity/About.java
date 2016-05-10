@@ -2,16 +2,11 @@ package com.wendu.wendutianqi.activity;
 
 import android.animation.Animator;
 import android.annotation.TargetApi;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewAnimationUtils;
@@ -19,7 +14,7 @@ import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
 
 import com.wendu.wendutianqi.R;
-import com.wendu.wendutianqi.utils.SystemBarUtil;
+import com.wendu.wendutianqi.utils.StatusBarUtil;
 
 public class About extends AppCompatActivity {
 
@@ -32,7 +27,7 @@ public class About extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
-        SystemBarUtil.setStatusBarColor(About.this,getResources().getColor(R.color.colorPrimary));
+        StatusBarUtil.setStatusBarColor(About.this,R.color.colorPrimary);
         initView();
 
     }

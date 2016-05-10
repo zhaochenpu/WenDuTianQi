@@ -31,7 +31,7 @@ import com.wendu.wendutianqi.net.Location;
 import com.wendu.wendutianqi.utils.CitySPUtils;
 import com.wendu.wendutianqi.utils.LogUtil;
 import com.wendu.wendutianqi.utils.SnackbarUtil;
-import com.wendu.wendutianqi.utils.SystemBarUtil;
+import com.wendu.wendutianqi.utils.StatusBarUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +61,7 @@ public class SelectCity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.select_activity);
 
-        SystemBarUtil.setStatusBarColor(SelectCity.this,getResources().getColor(R.color.colorPrimary));
+        StatusBarUtil.setStatusBarColor(SelectCity.this,R.color.colorPrimary);
 
         initView();
         initData();

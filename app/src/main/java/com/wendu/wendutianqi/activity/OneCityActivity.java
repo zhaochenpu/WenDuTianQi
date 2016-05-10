@@ -43,7 +43,7 @@ import com.wendu.wendutianqi.net.Urls;
 import com.wendu.wendutianqi.utils.LogUtil;
 import com.wendu.wendutianqi.utils.SPUtils;
 import com.wendu.wendutianqi.utils.SnackbarUtil;
-import com.wendu.wendutianqi.utils.SystemBarUtil;
+import com.wendu.wendutianqi.utils.StatusBarUtil;
 import com.wendu.wendutianqi.view.DailyCardLine;
 import com.wendu.wendutianqi.view.ErrorView;
 import com.wendu.wendutianqi.view.HoursCard;
@@ -89,7 +89,7 @@ public class OneCityActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.one_city);
-
+        StatusBarUtil.transparencyBar(OneCityActivity.this);
         mLocationClient = new LocationClient(OneCityActivity.this);     //声明LocationClient类
         mLocationClient.registerLocationListener(myListener);
         Location.initLocation(mLocationClient);
@@ -386,7 +386,7 @@ public class OneCityActivity extends AppCompatActivity {
                 titleColor=palette.getLightVibrantColor(getResources().getColor(R.color.white));
                 collapsingToolbar.setContentScrimColor(bgColor);
                 collapsingToolbar.setExpandedTitleColor(titleColor);
-                SystemBarUtil.setStatusBarColor(OneCityActivity.this,bgColor);
+//                SystemBarUtil.setStatusBarColor(OneCityActivity.this,bgColor);
 //                Palette.Swatch swatch = palette.getVibrantSwatch();
 //                Palette.Swatch swatch2 = palette.getLightVibrantSwatch();
 //                if (swatch != null) {

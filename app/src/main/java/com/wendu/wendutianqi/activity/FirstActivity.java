@@ -18,7 +18,7 @@ import com.wendu.wendutianqi.net.MyOkhttp;
 import com.wendu.wendutianqi.net.Urls;
 import com.wendu.wendutianqi.utils.LogUtil;
 import com.wendu.wendutianqi.utils.SPUtils;
-import com.wendu.wendutianqi.utils.SystemBarUtil;
+import com.wendu.wendutianqi.utils.StatusBarUtil;
 import com.wendu.wendutianqi.view.SecretTextView;
 
 import org.litepal.crud.DataSupport;
@@ -41,7 +41,7 @@ public class FirstActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.first_layout);
-		SystemBarUtil.transparencyBar(FirstActivity.this);
+		StatusBarUtil.transparencyBar(FirstActivity.this);
 
 //		City2=(String) SPUtils.get(this,"City2","");
 		first_rl=(RelativeLayout) findViewById(R.id.first_rl);

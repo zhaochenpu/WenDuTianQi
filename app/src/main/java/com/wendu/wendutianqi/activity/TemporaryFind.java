@@ -39,7 +39,7 @@ import com.wendu.wendutianqi.net.Urls;
 import com.wendu.wendutianqi.utils.CitySPUtils;
 import com.wendu.wendutianqi.utils.LogUtil;
 import com.wendu.wendutianqi.utils.SnackbarUtil;
-import com.wendu.wendutianqi.utils.SystemBarUtil;
+import com.wendu.wendutianqi.utils.StatusBarUtil;
 import com.wendu.wendutianqi.view.DailyCardLine;
 import com.wendu.wendutianqi.view.ErrorView;
 import com.wendu.wendutianqi.view.FindCityAdapter;
@@ -84,7 +84,7 @@ public class TemporaryFind extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.temporary_find);
 
-        SystemBarUtil.setStatusBarColor(this,getResources().getColor(R.color.colorPrimary));
+        StatusBarUtil.setStatusBarColor(this,R.color.colorPrimary);
 
         Intent intent=getIntent();
         from=intent.getStringExtra("where");
