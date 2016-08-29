@@ -41,26 +41,20 @@ public class Location {
 //            sb.append("time : ");
 //            sb.append(location.getTime());
             if (location.getLocType() == BDLocation.TypeGpsLocation) {// GPS定位结果
-//                ToastUtil.showShort(context,"gps定位成功");
 //                SnackbarUtil.showShortConfirm(coordinatorLayout," gps定位成功 ^_^");
                 return  true;
             } else if (location.getLocType() == BDLocation.TypeNetWorkLocation) {// 网络定位结果
-//                ToastUtil.showShort(context,"网络定位成功");
 //                SnackbarUtil.showShortConfirm(coordinatorLayout," 网络定位成功 ^_^");
                 return  true;
             } else if (location.getLocType() == BDLocation.TypeOffLineLocation) {// 离线定位结果
-//                ToastUtil.showShort(context,"离线定位成功");
 //                SnackbarUtil.showShortConfirm(coordinatorLayout," 离线定位成功 ");
 //                return  true;
             } else if (location.getLocType() == BDLocation.TypeServerError) {
-//                ToastUtil.showShort(context, "服务端网络定位失败");
-                SnackbarUtil.showShortAlert(coordinatorLayout," 服务端网络定位失败 X﹏X");
+                SnackbarUtil.ShortSnackbar(coordinatorLayout," 服务端网络定位失败 X﹏X",SnackbarUtil.Warning);
             } else if (location.getLocType() == BDLocation.TypeNetWorkException) {
-//                ToastUtil.showShort(context, "网络不通导致定位失败，请检查网络是否通畅");
-                SnackbarUtil.showShortWarning(coordinatorLayout,"网络不通导致定位失败，请检查网络是否通畅 ( ⊙ o ⊙ )");
+                SnackbarUtil.ShortSnackbar(coordinatorLayout,"网络不通导致定位失败，请检查网络是否通畅 ( ⊙ o ⊙ )",SnackbarUtil.Warning);
             } else if (location.getLocType() == BDLocation.TypeCriteriaException) {
-//                ToastUtil.showShort(context, "无法获取有效定位依据导致定位失败，请检查网络和本应用定位权限");
-                SnackbarUtil.showShortAlert(coordinatorLayout,"无法获取有效定位依据导致定位失败，请检查网络和本应用定位权限 ヽ（・＿・；)ノ");
+                SnackbarUtil.ShortSnackbar(coordinatorLayout,"无法获取有效定位依据导致定位失败，请检查网络和本应用定位权限 ヽ（・＿・；)ノ",SnackbarUtil.Warning);
             }
         }
         return  false;

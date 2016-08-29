@@ -10,8 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.wendu.wendutianqi.R;
-import com.wendu.wendutianqi.utils.SnackbarUtil;
-import com.wendu.wendutianqi.utils.ToastUtil;
 import com.wendu.wendutianqi.view.flowingdrawer.MenuFragment;
 
 

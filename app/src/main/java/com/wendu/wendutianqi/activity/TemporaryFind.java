@@ -166,7 +166,7 @@ public class TemporaryFind extends AppCompatActivity{
                 if(!TextUtils.isEmpty(place)){
                     new GetWeatherData().execute(Urls.WEATHER_URL);
                 }else{
-                    SnackbarUtil.showLongWarning(coordinatorLayout," 额，很抱歉，改地址不可用...");
+                    SnackbarUtil.LongSnackbar(coordinatorLayout," 额，很抱歉，改地址不可用...",SnackbarUtil.Warning);
                 }
             }
         });
@@ -228,15 +228,15 @@ public class TemporaryFind extends AppCompatActivity{
                     collection=false;
                     CitySPUtils.remove(TemporaryFind.this,place);
                     menuItemCollection.setIcon(R.mipmap.ic_star_border_white);
-                    SnackbarUtil.showLongConfirm(coordinatorLayout," 该地址已取消收藏");
+                    SnackbarUtil.LongSnackbar(coordinatorLayout," 该地址已取消收藏",SnackbarUtil.Confirm);
                 }else{
                     if(placeCan){
                         CitySPUtils.put(TemporaryFind.this,place,"1");
                         collection=true;
                         menuItemCollection.setIcon(R.mipmap.ic_star_white);
-                        SnackbarUtil.showLongConfirm(coordinatorLayout," 该地址已添加至收藏夹");
+                        SnackbarUtil.LongSnackbar(coordinatorLayout," 该地址已添加至收藏夹",SnackbarUtil.Confirm);
                     }else{
-                        SnackbarUtil.showLongWarning(coordinatorLayout," 额，很抱歉，改地址不可用...");
+                        SnackbarUtil.LongSnackbar(coordinatorLayout," 额，很抱歉，改地址不可用...",SnackbarUtil.Warning);
                     }
                 }
                 return true;
@@ -331,7 +331,7 @@ public class TemporaryFind extends AppCompatActivity{
                     menuItemSearch.setChecked(false);
                     menuItemSearch.collapseActionView();
                     searchView.onActionViewCollapsed();
-                    SnackbarUtil.showShortInfo(coordinatorLayout," 天气数据已更新 ~O(∩_∩)O~");
+                    SnackbarUtil.ShortSnackbar(coordinatorLayout," 天气数据已更新 ~O(∩_∩)O~",SnackbarUtil.Info);
                     if(temporary_find_recycler!=null){
                         temporary_find_recycler.setVisibility(View.GONE);
                     }
@@ -340,7 +340,7 @@ public class TemporaryFind extends AppCompatActivity{
                 }else if(TextUtils.equals("unknown city",status)){
                         if(place2){
                             placeCan=false;
-                        SnackbarUtil.showLongWarning(coordinatorLayout," 额，很抱歉，没有该地区信息...");
+                        SnackbarUtil.LongSnackbar(coordinatorLayout," 额，很抱歉，没有该地区信息...",SnackbarUtil.Warning);
                             mSwipeLayout.setVisibility(View.GONE);
                         }else{
                             place2=true;
@@ -352,7 +352,7 @@ public class TemporaryFind extends AppCompatActivity{
 
                             }else{
                                 placeCan=false;
-                                SnackbarUtil.showLongWarning(coordinatorLayout," 额，很抱歉，没有该地区信息...");
+                                SnackbarUtil.LongSnackbar(coordinatorLayout," 额，很抱歉，没有该地区信息...",SnackbarUtil.Warning);
                                 mSwipeLayout.setVisibility(View.GONE);
                             }
 

@@ -33,6 +33,7 @@ import com.google.gson.reflect.TypeToken;
 import com.wendu.wendutianqi.R;
 import com.wendu.wendutianqi.fragment.MyMenuFragment;
 import com.wendu.wendutianqi.model.AQI;
+import com.wendu.wendutianqi.model.AllChinaPlace;
 import com.wendu.wendutianqi.model.DailyForecast;
 import com.wendu.wendutianqi.model.HoursWeather;
 import com.wendu.wendutianqi.model.WeatherNow;
@@ -48,12 +49,14 @@ import com.wendu.wendutianqi.view.DailyCardLine;
 import com.wendu.wendutianqi.view.ErrorView;
 import com.wendu.wendutianqi.view.HoursCard;
 import com.wendu.wendutianqi.view.NowCard;
+import com.wendu.wendutianqi.view.SecretTextView;
 import com.wendu.wendutianqi.view.flowingdrawer.FlowingView;
 import com.wendu.wendutianqi.view.flowingdrawer.LeftDrawerLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.litepal.crud.DataSupport;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -63,33 +66,35 @@ import java.util.List;
 
 public class OneCityActivity extends AppCompatActivity {
 
-    private int bgColor,titleColor;
     private CollapsingToolbarLayout collapsingToolbar;
     private Toolbar toolbar;
-    private ActionBar ab;
     private LeftDrawerLayout mLeftDrawerLayout;
 //    private SystemBarTintManager tintManager;
     private SwipeRefreshLayout mSwipeLayout;
     private LocationClient mLocationClient = null;
     private BDLocationListener myListener = new MyLocationListener();
-    private String place, cityId,City1;
-//    private boolean place2;
+    private String place, cityId;
     private ErrorView errorView;
     private CoordinatorLayout coordinatorLayout;
     private ImageView headImageView;
     private NowCard nowCard;
     private HoursCard hoursCard;
     private DailyCardLine dailyCard;
-    private boolean location=true;
-    private   MyMenuFragment mMenuFragment;
-    private Calendar calendar;
+    private boolean location=true;//定位或手动选择城市标识
+    private MyMenuFragment mMenuFragment;
     private String todayweather;
     private List<DailyForecast> dailyForecast;
-    private NestedScrollView one_city_scroll;
+    private SecretTextView first_tv;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.one_city);
-        StatusBarUtil.transparencyBar(OneCityActivity.this);
+
+        boolean first=(boolean) SPUtils.get(this,"first",true);
+        if(first){
+            getAllCity();
+        }
+
         mLocationClient = new LocationClient(OneCityActivity.this);     //声明LocationClient类
         mLocationClient.registerLocationListener(myListener);
         Location.initLocation(mLocationClient);
@@ -102,6 +107,9 @@ public class OneCityActivity extends AppCompatActivity {
 
 
     public void initView(){
+
+        first_tv=(SecretTextView) findViewById(R.id.first_tv);
+        first_tv.show();
 
         coordinatorLayout=(CoordinatorLayout) findViewById(R.id.one_city_CoordinatorLayout);
 
@@ -136,8 +144,6 @@ public class OneCityActivity extends AppCompatActivity {
 
         headImageView=(ImageView) findViewById(R.id.one_city_iv);
 
-//        setHead();
-        one_city_scroll=(NestedScrollView) findViewById(R.id.one_city_scroll);
         nowCard=(NowCard) findViewById(R.id.one_city_nowcard);
         hoursCard=(HoursCard) findViewById(R.id.one_city_hourscard);
         dailyCard=(DailyCardLine) findViewById(R.id.one_city_dailycard);
@@ -146,6 +152,22 @@ public class OneCityActivity extends AppCompatActivity {
     }
 
     public void setListener(){
+        first_tv.SecretTextVieweAnimatorlintener(new SecretTextView.SecretTextVieweAnimator() {
+            @Override
+            public void OnTAL() {
+                if(first_tv.IsVisible()){
+                    new Handler().postDelayed(new Runnable(){
+                        public void run() {
+                            first_tv.setDuration(1000);
+                            first_tv.toggle();
+                        }
+                    },200);
+                }else{
+                    first_tv.setVisibility(View.GONE);
+                }
+
+            }
+        });
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -282,36 +304,27 @@ public class OneCityActivity extends AppCompatActivity {
                         WeatherNow weatherNow= gson.fromJson(now, WeatherNow.class);
                         nowCard.setData(weatherNow,aqi1);
 //                        calendar.get(Calendar.HOUR_OF_DAY);
-                        Bitmap bitmap=null;
                         todayweather=weatherNow.getCond().getTxt();
                         if(weatherNow.getCond().getTxt().contains("晴")){
                             headImageView.setImageResource(R.mipmap.flower);
-                            bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.flower);
                         }else if(weatherNow.getCond().getTxt().contains("云")){
                             headImageView.setImageResource(R.mipmap.duoyun_day);
-                            bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.duoyun_day);
                         }else if(weatherNow.getCond().getTxt().contains("阴")){
                             headImageView.setImageResource(R.mipmap.yin_youth);
-                            bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.yin_youth);
                         }else if(weatherNow.getCond().getTxt().contains("雾")||weatherNow.getCond().getTxt().contains("霾")){
                             headImageView.setImageResource(R.mipmap.wu);
-                            bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.wu);
                         }else if(weatherNow.getCond().getTxt().contains("雨")){
                             headImageView.setImageResource(R.mipmap.yu);
-                            bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.yu);
-                        }
-                        if(bitmap!=null){
-                            setHead(bitmap);
                         }
 
                         String daily_forecast =MyJson.getString(jsonObject,"daily_forecast");
                         dailyForecast= gson.fromJson(daily_forecast, new TypeToken<List<DailyForecast>>() {}.getType());
                         dailyCard.setData(dailyForecast);
 
-                        SnackbarUtil.showShortInfo(coordinatorLayout," 天气数据已更新 ~O(∩_∩)O~");
+                        SnackbarUtil.ShortSnackbar(coordinatorLayout," 天气数据已更新 ~O(∩_∩)O~",SnackbarUtil.Info);
                     }else if(TextUtils.equals("unknown city",status)){
 //                        if(place2){
-                            SnackbarUtil.showLongWarning(coordinatorLayout," 额，很抱歉，没有该地区信息...");
+                            SnackbarUtil.LongSnackbar(coordinatorLayout," 额，很抱歉，没有该地区信息...",SnackbarUtil.Warning);
 //                        }else{
 //                            place2=true;
 //                            mLocationClient.start();
@@ -323,7 +336,7 @@ public class OneCityActivity extends AppCompatActivity {
 
             }else {
                 mSwipeLayout.setVisibility(View.GONE);
-                SnackbarUtil.showLongWarning(coordinatorLayout," 额，没网了...");
+                SnackbarUtil.LongSnackbar(coordinatorLayout," 额，没网了...",SnackbarUtil.Warning);
                 errorView.ShowError();
             }
 
@@ -364,43 +377,25 @@ public class OneCityActivity extends AppCompatActivity {
                 }else{
                     hoursCard.setVisibility(View.GONE);
                 }
-
-
-            }else {
-
             }
-
-
         }
     }
 
-    /**
-     * 获取图片主颜色 设置状态栏和工具栏
-     */
-    public void setHead (Bitmap bitmap) {
+    private void getAllCity(){
+        new Thread() {
+            public void run() {
+                String result=MyOkhttp.get(Urls.ALL_CHINA_CITY);
 
-        Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
-            @Override
-            public void onGenerated(Palette palette) {
+                if(TextUtils.equals(MyJson.getString(result,"status"),"ok")&&!TextUtils.isEmpty(MyJson.getString(result,"city_info"))){
 
-                bgColor=palette.getVibrantColor(getResources().getColor(R.color.colorPrimary));
-//                titleColor=palette.getLightVibrantColor(getResources().getColor(R.color.white));
+                    Gson gson=new Gson();
+                    List<AllChinaPlace> citylist= gson.fromJson(MyJson.getString(result,"city_info"), new TypeToken<List<AllChinaPlace>>() {}.getType());
+                    DataSupport.saveAll(citylist);
 
-                collapsingToolbar.setContentScrimColor(bgColor);
-//                collapsingToolbar.setExpandedTitleColor(titleColor);
-//                SystemBarUtil.setStatusBarColor(OneCityActivity.this,bgColor);
-//                Palette.Swatch swatch = palette.getVibrantSwatch();
-//                Palette.Swatch swatch2 = palette.getLightVibrantSwatch();
-//                if (swatch != null) {
-//                    collapsingToolbar.setContentScrimColor(swatch.getRgb());
-//                    collapsingToolbar.setExpandedTitleColor(swatch.getBodyTextColor());
-//                }
-//                if (swatch2 != null) {
-//                    collapsingToolbar.setExpandedTitleColor(swatch2.getBodyTextColor());
-////                    scrollView.setBackgroundColor(swatch2.getBodyTextColor());
-//                }
+                    SPUtils.put(OneCityActivity.this,"first",false);
+                }
             }
-        });
+        }.start();
     }
 
     class MyLocationListener implements BDLocationListener {
@@ -427,16 +422,11 @@ public class OneCityActivity extends AppCompatActivity {
             }else{
                 mSwipeLayout.setRefreshing(false);
                 mSwipeLayout.setVisibility(View.GONE);
-                SnackbarUtil.showLongWarning(coordinatorLayout," 额，定位失败了...");
+                SnackbarUtil.LongSnackbar(coordinatorLayout," 额，定位失败了...",SnackbarUtil.Warning);
                 errorView.ShowError();
             }
             mLocationClient.stop();
         }
-    }
-
-    @Override
-    public void onResume(){
-        super.onResume();
     }
 
 
@@ -480,8 +470,5 @@ public class OneCityActivity extends AppCompatActivity {
             default:
         }
     }
-
-
-
 
 }

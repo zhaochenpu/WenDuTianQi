@@ -190,7 +190,7 @@ public class SelectCity extends AppCompatActivity {
                     CitySPUtils.remove(SelectCity.this,removePlace);
                     citylist.remove(position);
                     notifyItemRemoved(position);
-                    Snackbar_remove=SnackbarUtil.LongSnackbarWarning(select_city_coordinatorLayou,removePlace+"已移除收藏列表").setAction("撤销删除", new View.OnClickListener() {
+                    Snackbar_remove=SnackbarUtil.LongSnackbar(select_city_coordinatorLayou,removePlace+"已移除收藏列表",SnackbarUtil.Warning).setAction("撤销删除", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             if(!isFinishing()){
@@ -199,7 +199,7 @@ public class SelectCity extends AppCompatActivity {
                                 notifyItemInserted(position);
                             }
                         }
-                    }).setActionTextColor(0xffffc107);
+                    }).setActionTextColor(SnackbarUtil.red);
                     Snackbar_remove.show();
                     return false;
                 }

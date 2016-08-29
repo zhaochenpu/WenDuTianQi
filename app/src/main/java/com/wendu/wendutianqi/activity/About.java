@@ -12,22 +12,22 @@ import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
+import android.webkit.WebView;
 
 import com.wendu.wendutianqi.R;
 import com.wendu.wendutianqi.utils.StatusBarUtil;
 
 public class About extends AppCompatActivity {
 
-    private int bgColor,titleColor;
     private CoordinatorLayout coordinatorLayout;
-    private CollapsingToolbarLayout collapsingToolbar;
+    private WebView about_webview;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
-        StatusBarUtil.setStatusBarColor(About.this,R.color.colorPrimary);
+
         initView();
 
     }
@@ -49,17 +49,9 @@ public class About extends AppCompatActivity {
                 }
             });
         }
-        Toolbar toolbar = (Toolbar) findViewById(R.id.about_toolbar);
-        toolbar.setTitle("关于本应用");
-        toolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white);
 
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        about_webview=(WebView) findViewById(R.id.about_webview);
+        about_webview.loadUrl("http://zhaochenpu.github.io/2016/05/15/WenDu/");
     }
 
 }
