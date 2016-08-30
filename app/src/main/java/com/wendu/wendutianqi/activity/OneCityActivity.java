@@ -81,15 +81,16 @@ public class OneCityActivity extends AppCompatActivity {
     private HoursCard hoursCard;
     private DailyCardLine dailyCard;
     private boolean location=true;//定位或手动选择城市标识
-    private MyMenuFragment mMenuFragment;
-    private String todayweather;
+    private MyMenuFragment mMenuFragment;//抽屉的Fragment
+    private String todayweather;//离开时记录天气状况
     private List<DailyForecast> dailyForecast;
-    private SecretTextView first_tv;
+    private SecretTextView first_tv;//初始化时显示的页面
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.one_city);
 
+        //如果是第一次安装就加载全国城市列表
         boolean first=(boolean) SPUtils.get(this,"first",true);
         if(first){
             getAllCity();
@@ -115,9 +116,10 @@ public class OneCityActivity extends AppCompatActivity {
 
         mSwipeLayout = (SwipeRefreshLayout)findViewById(R.id.one_city_swipe);
         mSwipeLayout.setColorSchemeResources(R.color.colorPrimary,R.color.blue,R.color.cyan);
-        mSwipeLayout.setProgressViewOffset(false, 0,  (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
+        mSwipeLayout.setProgressViewOffset(false, 0,  (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));//调整下拉布局位置
         mSwipeLayout.setRefreshing(true);
 
+        //左侧弹性抽屉配置
         mLeftDrawerLayout = (LeftDrawerLayout) findViewById(R.id.one_city_drawerlayout);
         FragmentManager fm = getSupportFragmentManager();
         mMenuFragment = (MyMenuFragment) fm.findFragmentById(R.id.one_city_menu);
@@ -210,6 +212,7 @@ public class OneCityActivity extends AppCompatActivity {
             }
         });
 
+        //左侧抽屉Item选择监听
         mMenuFragment.setMenuItemSelectedListener(new MyMenuFragment.MenuItemSelectedListener() {
             @Override
             public void MenuItemSelectedListener(MenuItem item) {
@@ -222,14 +225,14 @@ public class OneCityActivity extends AppCompatActivity {
                                 Intent  intent2 =new Intent(OneCityActivity.this,SelectCity.class);
                                 startActivityForResult(intent2,100);
                             }
-                        },150);
+                        },150);//避免侧栏收起与跳转同时进行造成卡顿，延迟一会再跳转
                         break;
                     case R.id.menu_search:
                         intent=new Intent(OneCityActivity.this,TemporaryFind.class);
                         break;
-                    case R.id.menu_about:
-                             intent =new Intent(OneCityActivity.this,About.class);
-                        break;
+//                    case R.id.menu_about:
+//                             intent =new Intent(OneCityActivity.this,About.class);
+//                        break;
                 }
                 if(intent!=null){
                     final Intent finalIntent = intent;

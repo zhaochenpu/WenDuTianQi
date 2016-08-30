@@ -13,10 +13,10 @@
             android:icon="@mipmap/set"
             android:title="设置" />
 
-        <item
-            android:id="@+id/menu_about"
-            android:icon="@mipmap/kaifa"
-            android:title="关于" />
+        <!--<item-->
+            <!--android:id="@+id/menu_about"-->
+            <!--android:icon="@mipmap/kaifa"-->
+            <!--android:title="关于" />-->
 
 
     </group>

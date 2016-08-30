@@ -11,6 +11,7 @@ import com.wendu.wendutianqi.utils.LogUtil;
 
 /**
  * Created by el on 2016/3/24.
+ * 重写触摸事件，解决与NestedScrollView的冲突
  */
 public class myRecyclerView extends RecyclerView {
 

@@ -55,7 +55,7 @@ public class SelectCity extends AppCompatActivity {
     private TextView select_city_location_name;
     private LinearLayout select_city_location_ll;
     private Snackbar Snackbar_remove;
-//    private FindCityDialog findCityDialog;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
