@@ -45,6 +45,7 @@ import com.wendu.wendutianqi.utils.LogUtil;
 import com.wendu.wendutianqi.utils.SPUtils;
 import com.wendu.wendutianqi.utils.SnackbarUtil;
 import com.wendu.wendutianqi.utils.StatusBarUtil;
+import com.wendu.wendutianqi.utils.ToastUtil;
 import com.wendu.wendutianqi.view.DailyCardLine;
 import com.wendu.wendutianqi.view.ErrorView;
 import com.wendu.wendutianqi.view.HoursCard;
@@ -62,6 +63,13 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 
 public class OneCityActivity extends AppCompatActivity {
@@ -185,7 +193,7 @@ public class OneCityActivity extends AppCompatActivity {
                 if(location){
                     mLocationClient.start();
                 }else{
-                    new GetWeatherData().execute(Urls.WEATHER_URL);
+                    getWeather();
                 }
 
             }
@@ -197,7 +205,7 @@ public class OneCityActivity extends AppCompatActivity {
                 if(location){
                     mLocationClient.start();
                 }else{
-                    new GetWeatherData().execute(Urls.WEATHER_URL);
+                    getWeather();
                 }
             }
         });
@@ -207,7 +215,7 @@ public class OneCityActivity extends AppCompatActivity {
                 if(location){
                     mLocationClient.start();
                 }else{
-                    new GetWeatherData().execute(Urls.WEATHER_URL);
+                    getWeather();
                 }
             }
         });
@@ -248,104 +256,117 @@ public class OneCityActivity extends AppCompatActivity {
 
     }
 
-    private class GetWeatherData extends AsyncTask<String, Integer, String> {
+    private void getWeather(){
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(final Subscriber<? super String> subscriber) {
+                HashMap<String, String> map =new HashMap<String, String>();
+                map.put("city",place);
+               String result= MyOkhttp.post(Urls.WEATHER_URL,map);
 
-        @Override
-        protected String doInBackground(String... params) {
-            HashMap<String, String> map =new HashMap<String, String>();
-            map.put("city",place);
+                subscriber.onNext(result);
+                subscriber.onCompleted();
+            }
+        })  .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<String, JSONObject>(){
 
-            return MyOkhttp.post(params[0],map);
-        }
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-
-            Gson gson=new Gson();
-            if(!TextUtils.isEmpty(result)){
-
-                JSONObject jsonObject = null;
-                String jsonData=null;
-                String status=null;
-
+                    @Override
+                    public JSONObject call(String result) {
+                        JSONObject jsonObject = null;
+                        String jsonData=null;
+                        try {
+                            jsonObject = new JSONObject(result);
+                            jsonData = jsonObject.getString("HeWeather data service 3.0");
+                            JSONArray jsonArray=new JSONArray(jsonData);
+                            jsonObject=jsonArray.getJSONObject(0);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        return jsonObject;
+                    }
+                })
+                .subscribe(new Observer<JSONObject>() {
+            @Override
+            public void onNext(JSONObject jsonObject) {
+                Gson gson=new Gson();
+                String status= null;
                 try {
-                    jsonObject = new JSONObject(result);
-                     jsonData = jsonObject.getString("HeWeather data service 3.0");
-                    JSONArray jsonArray=new JSONArray(jsonData);
-                    jsonObject=jsonArray.getJSONObject(0);
-                    status=jsonObject.getString("status");
+                    status = jsonObject.getString("status");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                if(TextUtils.equals("ok",status)){
+                    mSwipeLayout.setVisibility(View.VISIBLE);
+                    errorView.ErrorGone();
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                        Animator animator = ViewAnimationUtils.createCircularReveal(coordinatorLayout,(coordinatorLayout.getWidth()/2),(coordinatorLayout.getHeight()/2)
+                                ,0,coordinatorLayout.getWidth());
+                        animator.setInterpolator(new AccelerateInterpolator());
+                        animator.setDuration(300);
+                        animator.start();
+                    }
 
-                    if(TextUtils.equals("ok",status)){
-                        mSwipeLayout.setVisibility(View.VISIBLE);
-                        errorView.ErrorGone();
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                            Animator animator = ViewAnimationUtils.createCircularReveal(coordinatorLayout,(coordinatorLayout.getWidth()/2),(coordinatorLayout.getHeight()/2)
-                                    ,0,coordinatorLayout.getWidth());
-                            animator.setInterpolator(new AccelerateInterpolator());
-                            animator.setDuration(300);
-                            animator.start();
-                        }
+                    String  basic= MyJson.getString(jsonObject,"basic");
+                    cityId= MyJson.getString(basic,"id");
+                    if(!TextUtils.isEmpty(cityId)){
+                        new  GetHoursWeatherData().execute(Urls.WEATHER_HOUR_URL+cityId.replace("CN", "")+".html");
+                    }
 
-                        String  basic= MyJson.getString(jsonObject,"basic");
-                        cityId= MyJson.getString(basic,"id");
-                        if(!TextUtils.isEmpty(cityId)){
-                            new  GetHoursWeatherData().execute(Urls.WEATHER_HOUR_URL+cityId.replace("CN", "")+".html");
-                        }
+                    String aqi =MyJson.getString(jsonObject,"aqi");
+                    aqi =MyJson.getString(aqi,"city");
+                    AQI aqi1 = null;
+                    if(!TextUtils.isEmpty(aqi)){
+                        aqi1= gson.fromJson(aqi, AQI.class);
+                    }else{
 
-                        String aqi =MyJson.getString(jsonObject,"aqi");
-                        aqi =MyJson.getString(aqi,"city");
-                        AQI aqi1 = null;
-                        if(!TextUtils.isEmpty(aqi)){
-                            aqi1= gson.fromJson(aqi, AQI.class);
-                        }else{
+                    }
 
-                        }
-
-                        String now =MyJson.getString(jsonObject,"now");
-                        WeatherNow weatherNow= gson.fromJson(now, WeatherNow.class);
-                        nowCard.setData(weatherNow,aqi1);
+                    String now =MyJson.getString(jsonObject,"now");
+                    WeatherNow weatherNow= gson.fromJson(now, WeatherNow.class);
+                    nowCard.setData(weatherNow,aqi1);
 //                        calendar.get(Calendar.HOUR_OF_DAY);
-                        todayweather=weatherNow.getCond().getTxt();
-                        if(weatherNow.getCond().getTxt().contains("晴")){
-                            headImageView.setImageResource(R.mipmap.flower);
-                        }else if(weatherNow.getCond().getTxt().contains("云")){
-                            headImageView.setImageResource(R.mipmap.duoyun_day);
-                        }else if(weatherNow.getCond().getTxt().contains("阴")){
-                            headImageView.setImageResource(R.mipmap.yin_youth);
-                        }else if(weatherNow.getCond().getTxt().contains("雾")||weatherNow.getCond().getTxt().contains("霾")){
-                            headImageView.setImageResource(R.mipmap.wu);
-                        }else if(weatherNow.getCond().getTxt().contains("雨")){
-                            headImageView.setImageResource(R.mipmap.yu);
-                        }
+                    todayweather=weatherNow.getCond().getTxt();
+                    if(weatherNow.getCond().getTxt().contains("晴")){
+                        headImageView.setImageResource(R.mipmap.flower);
+                    }else if(weatherNow.getCond().getTxt().contains("云")){
+                        headImageView.setImageResource(R.mipmap.duoyun_day);
+                    }else if(weatherNow.getCond().getTxt().contains("阴")){
+                        headImageView.setImageResource(R.mipmap.yin_youth);
+                    }else if(weatherNow.getCond().getTxt().contains("雾")||weatherNow.getCond().getTxt().contains("霾")){
+                        headImageView.setImageResource(R.mipmap.wu);
+                    }else if(weatherNow.getCond().getTxt().contains("雨")){
+                        headImageView.setImageResource(R.mipmap.yu);
+                    }
 
-                        String daily_forecast =MyJson.getString(jsonObject,"daily_forecast");
-                        dailyForecast= gson.fromJson(daily_forecast, new TypeToken<List<DailyForecast>>() {}.getType());
-                        dailyCard.setData(dailyForecast);
+                    String daily_forecast =MyJson.getString(jsonObject,"daily_forecast");
+                    dailyForecast= gson.fromJson(daily_forecast, new TypeToken<List<DailyForecast>>() {}.getType());
+                    dailyCard.setData(dailyForecast);
 
-                        SnackbarUtil.ShortSnackbar(coordinatorLayout," 天气数据已更新 ~O(∩_∩)O~",SnackbarUtil.Info);
-                    }else if(TextUtils.equals("unknown city",status)){
+                    SnackbarUtil.ShortSnackbar(coordinatorLayout," 天气数据已更新 ~O(∩_∩)O~",SnackbarUtil.Info);
+                }else if(TextUtils.equals("unknown city",status)){
 //                        if(place2){
-                            SnackbarUtil.LongSnackbar(coordinatorLayout," 额，很抱歉，没有该地区信息...",SnackbarUtil.Warning);
+                    SnackbarUtil.LongSnackbar(coordinatorLayout," 额，很抱歉，没有该地区信息...",SnackbarUtil.Warning);
 //                        }else{
 //                            place2=true;
 //                            mLocationClient.start();
 //                        }
-                    }else{
-                        mSwipeLayout.setVisibility(View.GONE);
-                        errorView.LodError();
-                    }
-
-            }else {
-                mSwipeLayout.setVisibility(View.GONE);
-                SnackbarUtil.LongSnackbar(coordinatorLayout," 额，没网了...",SnackbarUtil.Warning);
-                errorView.ShowError();
+                }else{
+                    mSwipeLayout.setVisibility(View.GONE);
+                    errorView.LodError();
+                }
+                mSwipeLayout.setRefreshing(false);
             }
 
-            mSwipeLayout.setRefreshing(false);
+            @Override
+            public void onCompleted() {
+            }
 
-        }
+            @Override
+            public void onError(Throwable e) {
+                ToastUtil.Short(OneCityActivity.this,e.getMessage()).show();
+            }
+        });
     }
 
     private class GetHoursWeatherData extends AsyncTask<String, Integer, String> {
@@ -420,7 +441,8 @@ public class OneCityActivity extends AppCompatActivity {
 //                }
 
                 collapsingToolbar .setTitle(place);
-                new GetWeatherData().execute(Urls.WEATHER_URL);
+//                new GetWeatherData().execute(Urls.WEATHER_URL);
+                getWeather();
 
             }else{
                 mSwipeLayout.setRefreshing(false);
@@ -466,7 +488,8 @@ public class OneCityActivity extends AppCompatActivity {
                         toolbar.setLogo(null);
                         collapsingToolbar .setTitle(place);
                         mSwipeLayout.setRefreshing(true);
-                        new GetWeatherData().execute(Urls.WEATHER_URL);
+                        getWeather();
+
                     }
                 }
                 break;

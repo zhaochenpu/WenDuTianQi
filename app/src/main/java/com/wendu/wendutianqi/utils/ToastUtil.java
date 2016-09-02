@@ -11,8 +11,8 @@ import android.widget.Toast;
  */
 public class ToastUtil {
 
-    private  Toast toast;
-    private LinearLayout toastView;
+    private static Toast toast;
+    private static LinearLayout toastView;
 
     /**
      * 修改原布局的Toast
@@ -82,8 +82,9 @@ public class ToastUtil {
     /**
      * 短时间显示Toast
      */
-    public  ToastUtil Short(Context context, CharSequence message)
+    public static ToastUtil Short(Context context, CharSequence message)
     {
+        ToastUtil toastUtil=new ToastUtil();
         if(toast==null||(toastView!=null&&toastView.getChildCount()>1)){
             toast= Toast.makeText(context, message, Toast.LENGTH_SHORT);
             toastView=null;
@@ -91,7 +92,7 @@ public class ToastUtil {
             toast.setText(message);
             toast.setDuration(Toast.LENGTH_SHORT);
         }
-        return this;
+        return toastUtil;
     }
 
     /**
