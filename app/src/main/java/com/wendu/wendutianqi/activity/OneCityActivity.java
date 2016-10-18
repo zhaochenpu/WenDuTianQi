@@ -1,15 +1,18 @@
 package com.wendu.wendutianqi.activity;
 
 
+import android.Manifest;
 import android.animation.Animator;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -42,6 +45,7 @@ import com.wendu.wendutianqi.net.MyJson;
 import com.wendu.wendutianqi.net.MyOkhttp;
 import com.wendu.wendutianqi.net.Urls;
 import com.wendu.wendutianqi.utils.LogUtil;
+import com.wendu.wendutianqi.utils.PermissionUtil;
 import com.wendu.wendutianqi.utils.SPUtils;
 import com.wendu.wendutianqi.utils.SnackbarUtil;
 import com.wendu.wendutianqi.utils.StatusBarUtil;
@@ -94,9 +98,24 @@ public class OneCityActivity extends AppCompatActivity {
     private List<DailyForecast> dailyForecast;
     private SecretTextView first_tv;//初始化时显示的页面
 
+    public static final String[] MUST_SECURITY_PERMISSIONS = new String[]{
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION
+    };
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.one_city);
+
+        if(Build.VERSION.SDK_INT >= 23) {  //6.0以后系统对敏感权限进行动态权限申请
+            PermissionUtil permissionUtil = new PermissionUtil(OneCityActivity.this);
+            String[] lackPermissions   = permissionUtil.getLacksPermissions(MUST_SECURITY_PERMISSIONS);
+
+            if(lackPermissions != null && lackPermissions.length > 0){
+                // 缺少权限时, 进入权限配置页面
+                ActivityCompat.requestPermissions(this,lackPermissions,PermissionUtil.REQUEST_PERMISSION_CODE);
+            }
+        }
 
         //如果是第一次安装就加载全国城市列表
         boolean first=(boolean) SPUtils.get(this,"first",true);

@@ -50,11 +50,11 @@ public class Location {
 //                SnackbarUtil.showShortConfirm(coordinatorLayout," 离线定位成功 ");
 //                return  true;
             } else if (location.getLocType() == BDLocation.TypeServerError) {
-                SnackbarUtil.ShortSnackbar(coordinatorLayout," 服务端网络定位失败 X﹏X",SnackbarUtil.Warning);
+                SnackbarUtil.ShortSnackbar(coordinatorLayout," 服务端网络定位失败 X﹏X",SnackbarUtil.Warning).show();
             } else if (location.getLocType() == BDLocation.TypeNetWorkException) {
-                SnackbarUtil.ShortSnackbar(coordinatorLayout,"网络不通导致定位失败，请检查网络是否通畅 ( ⊙ o ⊙ )",SnackbarUtil.Warning);
+                SnackbarUtil.ShortSnackbar(coordinatorLayout,"网络不通导致定位失败，请检查网络是否通畅 ( ⊙ o ⊙ )",SnackbarUtil.Warning).show();
             } else if (location.getLocType() == BDLocation.TypeCriteriaException) {
-                SnackbarUtil.ShortSnackbar(coordinatorLayout,"无法获取有效定位依据导致定位失败，请检查网络和本应用定位权限 ヽ（・＿・；)ノ",SnackbarUtil.Warning);
+                SnackbarUtil.ShortSnackbar(coordinatorLayout,"无法获取有效定位依据导致定位失败，请检查网络和本应用定位权限 ヽ（・＿・；)ノ",SnackbarUtil.Warning).show();
             }
         }
         return  false;
