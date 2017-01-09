@@ -4,6 +4,7 @@ package com.wendu.wendutianqi.activity;
 import android.Manifest;
 import android.animation.Animator;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -106,6 +107,8 @@ public class OneCityActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.one_city);
+
+        StatusBarUtil.transparencyBar(this);
 
         if(Build.VERSION.SDK_INT >= 23) {  //6.0以后系统对敏感权限进行动态权限申请
             PermissionUtil permissionUtil = new PermissionUtil(OneCityActivity.this);
@@ -251,6 +254,7 @@ public class OneCityActivity extends AppCompatActivity {
                             public void run() {
                                 Intent  intent2 =new Intent(OneCityActivity.this,SelectCity.class);
                                 startActivityForResult(intent2,100);
+                                overridePendingTransition(0,0);
                             }
                         },150);//避免侧栏收起与跳转同时进行造成卡顿，延迟一会再跳转
                         break;
@@ -266,6 +270,7 @@ public class OneCityActivity extends AppCompatActivity {
                     new Handler().postDelayed(new Runnable(){
                         public void run() {
                             startActivity(finalIntent);
+                            overridePendingTransition(0,0);
                         }
                     },150);
                 }
@@ -362,10 +367,10 @@ public class OneCityActivity extends AppCompatActivity {
                     dailyForecast= gson.fromJson(daily_forecast, new TypeToken<List<DailyForecast>>() {}.getType());
                     dailyCard.setData(dailyForecast);
 
-                    SnackbarUtil.ShortSnackbar(coordinatorLayout," 天气数据已更新 ~O(∩_∩)O~",SnackbarUtil.Info);
+                    SnackbarUtil.ShortSnackbar(coordinatorLayout," 天气数据已更新 ~O(∩_∩)O~",SnackbarUtil.Info).show();
                 }else if(TextUtils.equals("unknown city",status)){
 //                        if(place2){
-                    SnackbarUtil.LongSnackbar(coordinatorLayout," 额，很抱歉，没有该地区信息...",SnackbarUtil.Warning);
+                    SnackbarUtil.LongSnackbar(coordinatorLayout," 额，很抱歉，没有该地区信息...",SnackbarUtil.Warning).show();
 //                        }else{
 //                            place2=true;
 //                            mLocationClient.start();
@@ -466,7 +471,7 @@ public class OneCityActivity extends AppCompatActivity {
             }else{
                 mSwipeLayout.setRefreshing(false);
                 mSwipeLayout.setVisibility(View.GONE);
-                SnackbarUtil.LongSnackbar(coordinatorLayout," 额，定位失败了...",SnackbarUtil.Warning);
+                SnackbarUtil.LongSnackbar(coordinatorLayout," 额，定位失败了...",SnackbarUtil.Warning).show();
                 errorView.ShowError();
             }
             mLocationClient.stop();

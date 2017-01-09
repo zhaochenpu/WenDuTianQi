@@ -37,7 +37,8 @@
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="@string/baidulockey" />
 
-        <activity android:name=".activity.OneCityActivity" >
+        <activity android:name=".activity.OneCityActivity"
+            android:configChanges="orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -70,21 +71,21 @@ public class SelectCity extends AppCompatActivity {
 
     public void initView(){
         select_city_coordinatorLayou=(CoordinatorLayout) findViewById(R.id.select_city_coordinatorLayou);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            select_city_coordinatorLayou.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-                @Override
-                public boolean onPreDraw() {
-                    select_city_coordinatorLayou.getViewTreeObserver().removeOnPreDrawListener(this);
-                    Animator animator = ViewAnimationUtils.createCircularReveal(select_city_coordinatorLayou,(select_city_coordinatorLayou.getWidth()/2),(select_city_coordinatorLayou.getHeight()/2)
-                            ,0,select_city_coordinatorLayou.getWidth());
-                    animator.setInterpolator(new AccelerateInterpolator());
-                    animator.setDuration(500);
-                    animator.start();
-                    return true;
-                }
-            });
-        }
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+//            select_city_coordinatorLayou.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+//                @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+//                @Override
+//                public boolean onPreDraw() {
+//                    select_city_coordinatorLayou.getViewTreeObserver().removeOnPreDrawListener(this);
+//                    Animator animator = ViewAnimationUtils.createCircularReveal(select_city_coordinatorLayou,(select_city_coordinatorLayou.getWidth()/2),(select_city_coordinatorLayou.getHeight()/2)
+//                            ,0,select_city_coordinatorLayou.getWidth());
+//                    animator.setInterpolator(new AccelerateInterpolator());
+//                    animator.setDuration(300);
+//                    animator.start();
+//                    return true;
+//                }
+//            });
+//        }
 
         toolbar = (Toolbar) findViewById(R.id.select_toolbar);
         toolbar.setTitle("选择城市");

@@ -22,6 +22,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.ScrollView;
 
@@ -99,22 +101,21 @@ public class TemporaryFind extends AppCompatActivity{
     private void initView(){
 
         coordinatorLayout=(CoordinatorLayout) findViewById(R.id.temporary_find_CoordinatorLayout);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            coordinatorLayout.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-                @Override
-                public boolean onPreDraw() {
-                    coordinatorLayout.getViewTreeObserver().removeOnPreDrawListener(this);
-                    Animator animator = ViewAnimationUtils.createCircularReveal(coordinatorLayout,(coordinatorLayout.getWidth()/2),(coordinatorLayout.getHeight()/2)
-                            ,0,coordinatorLayout.getWidth());
-
-                    animator.setInterpolator(new AccelerateInterpolator());
-                    animator.setDuration(500);
-                    animator.start();
-                    return true;
-                }
-            });
-        }
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+//            coordinatorLayout.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+//                @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+//                @Override
+//                public boolean onPreDraw() {
+//                    coordinatorLayout.getViewTreeObserver().removeOnPreDrawListener(this);
+//                    Animator animator = ViewAnimationUtils.createCircularReveal(coordinatorLayout,(coordinatorLayout.getWidth()/2),(coordinatorLayout.getHeight()/2)
+//                            ,0,coordinatorLayout.getWidth());
+//                    animator.setInterpolator(new AccelerateInterpolator());
+//                    animator.setDuration(300);
+//                    animator.start();
+//                    return true;
+//                }
+//            });
+//        }
         mSwipeLayout = (SwipeRefreshLayout)findViewById(R.id.temporary_find_swipe);
         mSwipeLayout.setColorSchemeResources(R.color.colorPrimary,R.color.blue,R.color.light_colorPrimary);
         mSwipeLayout.setProgressViewOffset(false, 0,  (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
@@ -166,7 +167,7 @@ public class TemporaryFind extends AppCompatActivity{
                 if(!TextUtils.isEmpty(place)){
                     new GetWeatherData().execute(Urls.WEATHER_URL);
                 }else{
-                    SnackbarUtil.LongSnackbar(coordinatorLayout," 额，很抱歉，改地址不可用...",SnackbarUtil.Warning);
+                    SnackbarUtil.LongSnackbar(coordinatorLayout," 额，很抱歉，该地址不可用...",SnackbarUtil.Warning).show();
                 }
             }
         });
@@ -228,15 +229,15 @@ public class TemporaryFind extends AppCompatActivity{
                     collection=false;
                     CitySPUtils.remove(TemporaryFind.this,place);
                     menuItemCollection.setIcon(R.mipmap.ic_star_border_white);
-                    SnackbarUtil.LongSnackbar(coordinatorLayout," 该地址已取消收藏",SnackbarUtil.Confirm);
+                    SnackbarUtil.LongSnackbar(coordinatorLayout," 该地址已取消收藏",SnackbarUtil.Confirm).show();
                 }else{
                     if(placeCan){
                         CitySPUtils.put(TemporaryFind.this,place,"1");
                         collection=true;
                         menuItemCollection.setIcon(R.mipmap.ic_star_white);
-                        SnackbarUtil.LongSnackbar(coordinatorLayout," 该地址已添加至收藏夹",SnackbarUtil.Confirm);
+                        SnackbarUtil.LongSnackbar(coordinatorLayout," 该地址已添加至收藏夹",SnackbarUtil.Confirm).show();
                     }else{
-                        SnackbarUtil.LongSnackbar(coordinatorLayout," 额，很抱歉，改地址不可用...",SnackbarUtil.Warning);
+                        SnackbarUtil.LongSnackbar(coordinatorLayout," 额，很抱歉，改地址不可用...",SnackbarUtil.Warning).show();
                     }
                 }
                 return true;
@@ -331,7 +332,7 @@ public class TemporaryFind extends AppCompatActivity{
                     menuItemSearch.setChecked(false);
                     menuItemSearch.collapseActionView();
                     searchView.onActionViewCollapsed();
-                    SnackbarUtil.ShortSnackbar(coordinatorLayout," 天气数据已更新 ~O(∩_∩)O~",SnackbarUtil.Info);
+                    SnackbarUtil.ShortSnackbar(coordinatorLayout," 天气数据已更新 ~O(∩_∩)O~",SnackbarUtil.Info).show();
                     if(temporary_find_recycler!=null){
                         temporary_find_recycler.setVisibility(View.GONE);
                     }
@@ -340,7 +341,7 @@ public class TemporaryFind extends AppCompatActivity{
                 }else if(TextUtils.equals("unknown city",status)){
                         if(place2){
                             placeCan=false;
-                        SnackbarUtil.LongSnackbar(coordinatorLayout," 额，很抱歉，没有该地区信息...",SnackbarUtil.Warning);
+                        SnackbarUtil.LongSnackbar(coordinatorLayout," 额，很抱歉，没有该地区信息...",SnackbarUtil.Warning).show();
                             mSwipeLayout.setVisibility(View.GONE);
                         }else{
                             place2=true;
@@ -352,7 +353,7 @@ public class TemporaryFind extends AppCompatActivity{
 
                             }else{
                                 placeCan=false;
-                                SnackbarUtil.LongSnackbar(coordinatorLayout," 额，很抱歉，没有该地区信息...",SnackbarUtil.Warning);
+                                SnackbarUtil.LongSnackbar(coordinatorLayout," 额，很抱歉，没有该地区信息...",SnackbarUtil.Warning).show();
                                 mSwipeLayout.setVisibility(View.GONE);
                             }
 
@@ -432,7 +433,7 @@ public class TemporaryFind extends AppCompatActivity{
     }
 
     public void setBack(){
-        LogUtil.e(".........."+placeCan);
+
         if(menuItemSearch.isActionViewExpanded()&&placeCan){
             searchView.onActionViewCollapsed();
             temporary_find_recycler.setVisibility(View.GONE);

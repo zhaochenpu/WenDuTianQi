@@ -33,25 +33,25 @@ public class About extends AppCompatActivity {
     }
 
     public void initView(){
-        coordinatorLayout=(CoordinatorLayout) findViewById(R.id.about_CoordinatorLayout);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            coordinatorLayout.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-                @Override
-                public boolean onPreDraw() {
-                    coordinatorLayout.getViewTreeObserver().removeOnPreDrawListener(this);
-                    Animator animator = ViewAnimationUtils.createCircularReveal(coordinatorLayout,(coordinatorLayout.getWidth()/2),(coordinatorLayout.getHeight()/2)
-                            ,0,coordinatorLayout.getWidth());
-                    animator.setInterpolator(new AccelerateInterpolator());
-                    animator.setDuration(500);
-                    animator.start();
-                    return true;
-                }
-            });
-        }
-
-        about_webview=(WebView) findViewById(R.id.about_webview);
-        about_webview.loadUrl("http://zhaochenpu.github.io/2016/05/15/WenDu/");
+//        coordinatorLayout=(CoordinatorLayout) findViewById(R.id.about_CoordinatorLayout);
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+//            coordinatorLayout.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+//                @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+//                @Override
+//                public boolean onPreDraw() {
+//                    coordinatorLayout.getViewTreeObserver().removeOnPreDrawListener(this);
+//                    Animator animator = ViewAnimationUtils.createCircularReveal(coordinatorLayout,(coordinatorLayout.getWidth()/2),(coordinatorLayout.getHeight()/2)
+//                            ,0,coordinatorLayout.getWidth());
+//                    animator.setInterpolator(new AccelerateInterpolator());
+//                    animator.setDuration(500);
+//                    animator.start();
+//                    return true;
+//                }
+//            });
+//        }
+//
+//        about_webview=(WebView) findViewById(R.id.about_webview);
+//        about_webview.loadUrl("http://zhaochenpu.github.io/2016/05/15/WenDu/");
     }
 
 }
